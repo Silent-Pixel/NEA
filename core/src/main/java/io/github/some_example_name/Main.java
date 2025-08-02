@@ -4,9 +4,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -14,21 +11,27 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class Main extends ApplicationAdapter {
 
     ShapeRenderer sr;
-
     Player player;
+
+    float delta_time;
 
     @Override
     public void create() {
         sr = new ShapeRenderer();
-
         player = new Player(960, 540, 25, 25, Color.LIME);
+
+        delta_time = Gdx.graphics.getDeltaTime();
     }
 
     @Override
     public void render() {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
+        //Rendering
         render_player();
+
+        //Movement
+        player_movement();
 
         quit_on_esc();
     }
@@ -38,6 +41,24 @@ public class Main extends ApplicationAdapter {
         sr.setColor(player.getColour());
         sr.rect(player.getX(), player.getY(), player.getW(), player.getH());
         sr.end();
+    }
+
+    public void player_movement(){
+        if (Gdx.input.isKeyPressed(Input.Keys.W)){
+            player.setY(player.getY() + (100 * delta_time));
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.A)){
+            player.setX(player.getX() - (100 * delta_time));
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.S)){
+            player.setY(player.getY() - (100 * delta_time));
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.D)){
+            player.setX(player.getX() + (100 * delta_time));
+        }
     }
 
     public void quit_on_esc() {

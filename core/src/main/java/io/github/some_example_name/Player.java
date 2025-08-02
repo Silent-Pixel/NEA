@@ -4,7 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 
 public class Player {
 
-    private int x, y, w, h;
+    private float x, y;
+    private int w, h;
     private Color Colour;
 
     public Player(int x, int y, int w, int h, Color colour) {
@@ -15,19 +16,19 @@ public class Player {
         Colour = colour;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(float y) {
         this.y = y;
     }
 
