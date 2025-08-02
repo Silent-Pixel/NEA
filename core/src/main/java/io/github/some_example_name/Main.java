@@ -13,14 +13,10 @@ public class Main extends ApplicationAdapter {
     ShapeRenderer sr;
     Player player;
 
-    float delta_time;
-
     @Override
     public void create() {
         sr = new ShapeRenderer();
         player = new Player(960, 540, 25, 25, Color.LIME);
-
-        delta_time = Gdx.graphics.getDeltaTime();
     }
 
     @Override
@@ -45,19 +41,19 @@ public class Main extends ApplicationAdapter {
 
     public void player_movement(){
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
-            player.setY(player.getY() + (100 * delta_time));
+            player.setY(player.getY() + (100 * Gdx.graphics.getDeltaTime()));
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
-            player.setX(player.getX() - (100 * delta_time));
+            player.setX(player.getX() - (100 * Gdx.graphics.getDeltaTime()));
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            player.setY(player.getY() - (100 * delta_time));
+            player.setY(player.getY() - (100 * Gdx.graphics.getDeltaTime()));
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
-            player.setX(player.getX() + (100 * delta_time));
+            player.setX(player.getX() + (100 * Gdx.graphics.getDeltaTime()));
         }
     }
 
