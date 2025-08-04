@@ -17,6 +17,12 @@ public class Main extends ApplicationAdapter {
     public void create() {
         sr = new ShapeRenderer();
         player = new Player(960, 540, 25, 25, Color.LIME);
+
+        create_grid();
+    }
+
+    public void create_grid(){
+
     }
 
     @Override
@@ -41,19 +47,19 @@ public class Main extends ApplicationAdapter {
 
     public void player_movement(){
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
-            player.setY(player.getY() + (100 * Gdx.graphics.getDeltaTime()));
+            player.setY(player.getY() + (250 * Gdx.graphics.getDeltaTime()));
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
-            player.setX(player.getX() - (100 * Gdx.graphics.getDeltaTime()));
+            player.setX(player.getX() - (250 * Gdx.graphics.getDeltaTime()));
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            player.setY(player.getY() - (100 * Gdx.graphics.getDeltaTime()));
+            player.setY(player.getY() - (250 * Gdx.graphics.getDeltaTime()));
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
-            player.setX(player.getX() + (100 * Gdx.graphics.getDeltaTime()));
+            player.setX(player.getX() + (250 * Gdx.graphics.getDeltaTime()));
         }
     }
 
