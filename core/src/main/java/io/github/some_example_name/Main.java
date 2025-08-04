@@ -4,30 +4,54 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import java.util.ArrayList;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
 
     ShapeRenderer sr;
     Player player;
+    Maps[][] maps;
+
+    SpriteBatch batch;
+    Texture backgroundTexture;
 
     @Override
     public void create() {
         sr = new ShapeRenderer();
-        player = new Player(960, 540, 25, 25, Color.LIME);
+        maps = new Maps[5][5];
 
-        create_grid();
+        batch = new SpriteBatch();
+        backgroundTexture = new Texture("worlds/world_1.png");
+
+        //create_grid();
+
+        player = new Player(960, 540, 25, 25, Color.LIME);
     }
 
     public void create_grid(){
-
+        for (int i = 0; i < maps.length; i++){
+            for (int j = 0; j < maps[i].length; j++){
+                maps[i][j] = new Maps(0, 0, false);
+            }
+        }
     }
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+        //ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
 
         //Rendering
         render_player();
@@ -73,5 +97,8 @@ public class Main extends ApplicationAdapter {
     @Override
     public void dispose() {
         sr.dispose();
+        batch.dispose();
+        backgroundTexture.dispose();
+
     }
 }
