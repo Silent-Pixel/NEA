@@ -12,34 +12,39 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
 
     ShapeRenderer sr;
     Player player;
-    Maps[][] maps;
-
+    Random random;
     SpriteBatch batch;
-    Texture backgroundTexture;
+    Texture[][] BackgroundTexture;
+
+    int CurrentTextureX, CurrentTextureY;
+    boolean HasTransisioned;
 
     @Override
     public void create() {
         sr = new ShapeRenderer();
-        maps = new Maps[5][5];
-
         batch = new SpriteBatch();
-        backgroundTexture = new Texture("worlds/world_1.png");
+        random = new Random();
+        BackgroundTexture = new Texture[5][5];
+        player = new Player(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 25, 25, Color.LIME);
 
-        //create_grid();
+        CurrentTextureX = 2;
+        CurrentTextureY = 2;
 
-        player = new Player(960, 540, 25, 25, Color.LIME);
+        BackgroundTextureSetting();
     }
 
-    public void create_grid(){
-        for (int i = 0; i < maps.length; i++){
-            for (int j = 0; j < maps[i].length; j++){
-                maps[i][j] = new Maps(0, 0, false);
+    public void BackgroundTextureSetting(){
+        for (int i = 0; i < BackgroundTexture.length; i++){
+            for (int j = 0; j < BackgroundTexture[i].length; j++){
+                int RandomNum = random.nextInt(5) + 1;
+                BackgroundTexture[i][j] = new Texture("worlds/world_" + RandomNum + ".png");
             }
         }
     }
@@ -48,28 +53,28 @@ public class Main extends ApplicationAdapter {
     public void render() {
         //ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.end();
-
-        //Rendering
-        render_player();
-
-        //Movement
-        player_movement();
-
-        quit_on_esc();
+        BackgroundTextureChanging();
+        RenderPlayer();
+        PlayerMovement();
+        BackgroundTextureChangeDetection();
+        QuitOnEsc();
     }
 
-    public void render_player(){
+    public void BackgroundTextureChanging(){
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        batch.draw(BackgroundTexture[CurrentTextureX][CurrentTextureY], 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
+    }
+
+    public void RenderPlayer(){
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(player.getColour());
         sr.rect(player.getX(), player.getY(), player.getW(), player.getH());
         sr.end();
     }
 
-    public void player_movement(){
+    public void PlayerMovement(){
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
             player.setY(player.getY() + (250 * Gdx.graphics.getDeltaTime()));
         }
@@ -87,7 +92,22 @@ public class Main extends ApplicationAdapter {
         }
     }
 
-    public void quit_on_esc() {
+    public void BackgroundTextureChangeDetection(){
+        HasTransisioned = false;
+        System.out.println(BackgroundTexture[2][2]);
+        System.out.println(BackgroundTexture[2][3]);
+        System.out.println(BackgroundTexture[2][4]);
+        if (player.getY() > 980) {
+            if (!HasTransisioned){
+                CurrentTextureY++;
+                player.setX(960);
+                player.setY(540);
+                HasTransisioned = true;
+            }
+        }
+    }
+
+    public void QuitOnEsc() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
             System.exit(-1);
@@ -98,7 +118,10 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         sr.dispose();
         batch.dispose();
-        backgroundTexture.dispose();
-
+        for (int i = 0; i < BackgroundTexture.length; i++){
+            for (int j = 0; j < BackgroundTexture[i].length; j++){
+                BackgroundTexture[i][j].dispose();
+            }
+        }
     }
 }
