@@ -6,12 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.ScreenUtils;
-
-import java.util.ArrayList;
 import java.util.Random;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -22,9 +18,8 @@ public class Main extends ApplicationAdapter {
     Random random;
     SpriteBatch batch;
     Texture[][] BackgroundTexture;
-
     int CurrentTextureX, CurrentTextureY;
-    boolean HasTransisioned;
+    boolean HasTransitioned;
 
     @Override
     public void create() {
@@ -33,7 +28,6 @@ public class Main extends ApplicationAdapter {
         random = new Random();
         BackgroundTexture = new Texture[5][5];
         player = new Player(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 25, 25, Color.LIME);
-
         CurrentTextureX = 2;
         CurrentTextureY = 2;
 
@@ -51,7 +45,6 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        //ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
         BackgroundTextureChanging();
         RenderPlayer();
@@ -93,33 +86,33 @@ public class Main extends ApplicationAdapter {
     }
 
     public void BackgroundTextureChangeDetection(){
-        HasTransisioned = false;
-        if (player.getY() > 980 && !HasTransisioned && CurrentTextureY <= 3) {
+        HasTransitioned = false;
+        if (player.getY() > 980 && !HasTransitioned && CurrentTextureY <= 3) {
                 CurrentTextureY++;
                 player.setX(960);
                 player.setY(540);
-                HasTransisioned = true;
+                HasTransitioned = true;
         }
 
-        else if (player.getY() < 100 && !HasTransisioned && CurrentTextureY >= 1){
+        else if (player.getY() < 100 && !HasTransitioned && CurrentTextureY >= 1){
                 CurrentTextureY--;
                 player.setX(960);
                 player.setY(540);
-                HasTransisioned = true;
+                HasTransitioned = true;
         }
 
-        else if (player.getX() > 1820 && !HasTransisioned && CurrentTextureX <= 3){
+        else if (player.getX() > 1820 && !HasTransitioned && CurrentTextureX <= 3){
                 CurrentTextureX++;
                 player.setX(960);
                 player.setY(540);
-                HasTransisioned = true;
+                HasTransitioned = true;
         }
 
-        else if (player.getX() < 100 && !HasTransisioned && CurrentTextureX >= 1){
+        else if (player.getX() < 100 && !HasTransitioned && CurrentTextureX >= 1){
                 CurrentTextureX--;
                 player.setX(960);
                 player.setY(540);
-                HasTransisioned = true;
+                HasTransitioned = true;
         }
     }
 
