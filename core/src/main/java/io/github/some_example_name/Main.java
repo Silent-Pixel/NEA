@@ -94,12 +94,36 @@ public class Main extends ApplicationAdapter {
 
     public void BackgroundTextureChangeDetection(){
         HasTransisioned = false;
-        System.out.println(BackgroundTexture[2][2]);
-        System.out.println(BackgroundTexture[2][3]);
-        System.out.println(BackgroundTexture[2][4]);
         if (player.getY() > 980) {
             if (!HasTransisioned){
                 CurrentTextureY++;
+                player.setX(960);
+                player.setY(540);
+                HasTransisioned = true;
+            }
+        }
+
+        else if (player.getY() < 100){
+            if (!HasTransisioned){
+                CurrentTextureY--;
+                player.setX(960);
+                player.setY(540);
+                HasTransisioned = true;
+            }
+        }
+
+        else if (player.getX() > 1820){
+            if (!HasTransisioned){
+                CurrentTextureX++;
+                player.setX(960);
+                player.setY(540);
+                HasTransisioned = true;
+            }
+        }
+
+        else if (player.getX() < 100){
+            if (!HasTransisioned){
+                CurrentTextureX--;
                 player.setX(960);
                 player.setY(540);
                 HasTransisioned = true;
