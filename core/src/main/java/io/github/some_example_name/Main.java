@@ -76,58 +76,50 @@ public class Main extends ApplicationAdapter {
 
     public void PlayerMovement(){
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
-            player.setY(player.getY() + (250 * Gdx.graphics.getDeltaTime()));
+            player.setY(player.getY() + (500 * Gdx.graphics.getDeltaTime()));
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
-            player.setX(player.getX() - (250 * Gdx.graphics.getDeltaTime()));
+            player.setX(player.getX() - (500 * Gdx.graphics.getDeltaTime()));
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            player.setY(player.getY() - (250 * Gdx.graphics.getDeltaTime()));
+            player.setY(player.getY() - (500 * Gdx.graphics.getDeltaTime()));
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
-            player.setX(player.getX() + (250 * Gdx.graphics.getDeltaTime()));
+            player.setX(player.getX() + (500 * Gdx.graphics.getDeltaTime()));
         }
     }
 
     public void BackgroundTextureChangeDetection(){
         HasTransisioned = false;
-        if (player.getY() > 980) {
-            if (!HasTransisioned){
+        if (player.getY() > 980 && !HasTransisioned && CurrentTextureY <= 3) {
                 CurrentTextureY++;
                 player.setX(960);
                 player.setY(540);
                 HasTransisioned = true;
-            }
         }
 
-        else if (player.getY() < 100){
-            if (!HasTransisioned){
+        else if (player.getY() < 100 && !HasTransisioned && CurrentTextureY >= 1){
                 CurrentTextureY--;
                 player.setX(960);
                 player.setY(540);
                 HasTransisioned = true;
-            }
         }
 
-        else if (player.getX() > 1820){
-            if (!HasTransisioned){
+        else if (player.getX() > 1820 && !HasTransisioned && CurrentTextureX <= 3){
                 CurrentTextureX++;
                 player.setX(960);
                 player.setY(540);
                 HasTransisioned = true;
-            }
         }
 
-        else if (player.getX() < 100){
-            if (!HasTransisioned){
+        else if (player.getX() < 100 && !HasTransisioned && CurrentTextureX >= 1){
                 CurrentTextureX--;
                 player.setX(960);
                 player.setY(540);
                 HasTransisioned = true;
-            }
         }
     }
 
