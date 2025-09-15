@@ -17,6 +17,7 @@ public class Main extends ApplicationAdapter {
     Player player;
     Random random;
     SpriteBatch batch;
+    Collision collision;
     Texture[][] BackgroundTexture;
     int CurrentTextureX, CurrentTextureY;
     boolean HasTransitioned;
@@ -24,10 +25,11 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         sr = new ShapeRenderer();
-        batch = new SpriteBatch();
-        random = new Random();
-        BackgroundTexture = new Texture[5][5];
         player = new Player(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 25, 25, Color.LIME);
+        random = new Random();
+        batch = new SpriteBatch();
+        collision = new Collision();
+        BackgroundTexture = new Texture[5][5];
         CurrentTextureX = 2;
         CurrentTextureY = 2;
 
@@ -67,21 +69,50 @@ public class Main extends ApplicationAdapter {
         sr.end();
     }
 
+    public void PlayerMovementTemp(){
+        boolean valid = collision.CheckValidMove(player.getX() + 1, player.getY() + 1);
+        if (!valid){
+            if (Gdx.input.isKeyPressed(Input.Keys.W)){
+                player.setY(player.getY() + (500 * Gdx.graphics.getDeltaTime()));
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.A)){
+                player.setX(player.getX() - (500 * Gdx.graphics.getDeltaTime()));
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.S)){
+                player.setY(player.getY() - (500 * Gdx.graphics.getDeltaTime()));
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.D)){
+                player.setX(player.getX() + (500 * Gdx.graphics.getDeltaTime()));
+            }
+        }
+    }
+
     public void PlayerMovement(){
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
-            player.setY(player.getY() + (500 * Gdx.graphics.getDeltaTime()));
+            if (!collision.CheckValidMove(player.getX(), player.getY() + (500 * Gdx.graphics.getDeltaTime()))) {
+                player.setY(player.getY() + (500 * Gdx.graphics.getDeltaTime()));
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
-            player.setX(player.getX() - (500 * Gdx.graphics.getDeltaTime()));
+            if (!collision.CheckValidMove(player.getX() - (500 * Gdx.graphics.getDeltaTime()), player.getY())) {
+                player.setX(player.getX() - (500 * Gdx.graphics.getDeltaTime()));
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            player.setY(player.getY() - (500 * Gdx.graphics.getDeltaTime()));
+            if (!collision.CheckValidMove(player.getX(), player.getY() - (500 * Gdx.graphics.getDeltaTime()))) {
+                player.setY(player.getY() - (500 * Gdx.graphics.getDeltaTime()));
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
-            player.setX(player.getX() + (500 * Gdx.graphics.getDeltaTime()));
+            if (!collision.CheckValidMove(player.getX() + (500 * Gdx.graphics.getDeltaTime()), player.getY())) {
+                player.setX(player.getX() + (500 * Gdx.graphics.getDeltaTime()));
+            }
         }
     }
 
