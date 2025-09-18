@@ -29,7 +29,7 @@ public class Main extends ApplicationAdapter {
         //setting variables
         sr = new ShapeRenderer();
         player = new Player(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 25, 25, Color.LIME);
-        enemy = new Enemy(500, 500, 25, 25, Color.DARK_GRAY);
+        enemy = new Enemy(960, 340, 25, 25, Color.DARK_GRAY);
         random = new Random();
         batch = new SpriteBatch();
         collision = new Collision();
@@ -56,6 +56,7 @@ public class Main extends ApplicationAdapter {
 
         BackgroundTextureChanging();
         RenderPlayer();
+        RenderEnemy();
         PlayerMovement();
         BackgroundTextureChangeDetection();
         QuitOnEsc();
@@ -70,11 +71,20 @@ public class Main extends ApplicationAdapter {
     }
 
     public void RenderPlayer(){
-        //renders the player cube on the screen
+        //renders the player as a cube on the screen
         //temporary and will be replaced with an actual character of some sorts
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(player.getColour());
         sr.rect(player.getX(), player.getY(), player.getW(), player.getH());
+        sr.end();
+    }
+
+    public void RenderEnemy(){
+        //renders the monster as a cube on the screen
+        //temporary and will be replaced with an actual character of some sorts
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(enemy.getColour());
+        sr.rect(enemy.getX(), enemy.getY(), enemy.getW(), enemy.getH());
         sr.end();
     }
 
