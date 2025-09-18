@@ -16,6 +16,7 @@ public class Main extends ApplicationAdapter {
     //creating variables
     ShapeRenderer sr;
     Player player;
+    Enemy enemy;
     Random random;
     SpriteBatch batch;
     Collision collision;
@@ -28,6 +29,7 @@ public class Main extends ApplicationAdapter {
         //setting variables
         sr = new ShapeRenderer();
         player = new Player(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 25, 25, Color.LIME);
+        enemy = new Enemy(500, 500, 25, 25, Color.DARK_GRAY);
         random = new Random();
         batch = new SpriteBatch();
         collision = new Collision();
