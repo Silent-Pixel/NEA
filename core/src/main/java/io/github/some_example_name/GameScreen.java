@@ -134,7 +134,7 @@ public class GameScreen implements Screen {
     }
 
     public void GoToMainMenuOnEsc() {
-        //program quits once esc is pressed on the keyboard by the user
+        //program will go to main menu when player presses esc
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             game.setScreen(new MainMenuScreen());
         }

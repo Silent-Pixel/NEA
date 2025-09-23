@@ -19,14 +19,11 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
-        // Initialize Stage
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // Load UI skin (you'll need a skin file)
         skin = new Skin(Gdx.files.internal("glassy-ui.json"));
 
-        // Create main table for layout
         table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
@@ -35,22 +32,22 @@ public class MainMenuScreen implements Screen {
     }
 
     private void createMenu() {
-        //Title label;
+        //Not a clue what this does but breaks the program when uncommented
         //Label titleLabel = new Label("My Game", skin, "title");
         //Stable.add(titleLabel).padBottom(50).row();
 
-        // Play button
+        //Creating the play button and starts the game screen class which has the code for the game
         TextButton playButton = new TextButton("Play", skin);
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Switch to game screen
+                //Changed to the gamescreen to allow the game to start
                 ((Main)Gdx.app.getApplicationListener()).StartGame();
             }
         });
         table.add(playButton).width(200).height(60).padBottom(20).row();
 
-        // Options button
+        //Creating the ptions button (currently does nothing)
         TextButton optionsButton = new TextButton("Options", skin);
         optionsButton.addListener(new ClickListener() {
             @Override
@@ -60,7 +57,7 @@ public class MainMenuScreen implements Screen {
         });
         table.add(optionsButton).width(200).height(60).padBottom(20).row();
 
-        // Exit button
+        //Creating exit button which takes user back to screen when the esc key is pressed and then quits program when the exit button is pressed
         TextButton exitButton = new TextButton("Exit", skin);
         exitButton.addListener(new ClickListener() {
             @Override
@@ -73,11 +70,10 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Clear screen
+        //Clears the screen
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Update and draw stage
         stage.act(delta);
         stage.draw();
     }
@@ -93,7 +89,6 @@ public class MainMenuScreen implements Screen {
         skin.dispose();
     }
 
-    // Other Screen methods (pause, resume, hide) - leave empty for now
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
