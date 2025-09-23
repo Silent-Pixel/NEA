@@ -35,9 +35,9 @@ public class MainMenuScreen implements Screen {
     }
 
     private void createMenu() {
-        // Title label
+        //Title label;
         //Label titleLabel = new Label("My Game", skin, "title");
-        //table.add(titleLabel).padBottom(50).row();
+        //Stable.add(titleLabel).padBottom(50).row();
 
         // Play button
         TextButton playButton = new TextButton("Play", skin);
@@ -45,7 +45,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Switch to game screen
-                System.out.println("Play button clicked!");
+                ((Main)Gdx.app.getApplicationListener()).StartGame();
             }
         });
         table.add(playButton).width(200).height(60).padBottom(20).row();

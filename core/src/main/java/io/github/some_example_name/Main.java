@@ -1,11 +1,8 @@
 package io.github.some_example_name;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -38,8 +35,9 @@ public class Main extends Game {
         CurrentTextureX = 2;
         CurrentTextureY = 2;
 
-        setScreen(new MainMenuScreen());
         BackgroundTextureSetting();
+
+        setScreen(new MainMenuScreen());
     }
 
     public void BackgroundTextureSetting(){
@@ -53,122 +51,61 @@ public class Main extends Game {
         }
     }
 
-    @Override
-    public void render() {
-
-        BackgroundTextureChanging();
-        RenderPlayer();
-        RenderEnemy();
-        PlayerMovement();
-        BackgroundTextureChangeDetection();
-        QuitOnEsc();
+    public void StartGame(){
+        setScreen(new GameScreen(this));
     }
 
-    public void BackgroundTextureChanging(){
-        //draws the current loaded world in 2,2 onto the players screen at 0,0 on the screen (bottom left) in a resolution of 1920x1080
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        batch.draw(BackgroundTexture[CurrentTextureX][CurrentTextureY], 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.end();
+    public ShapeRenderer getSr(){
+        return sr;
     }
 
-    public void RenderPlayer(){
-        //renders the player as a cube on the screen
-        //temporary and will be replaced with an actual character of some sorts
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(player.getColour());
-        sr.rect(player.getX(), player.getY(), player.getW(), player.getH());
-        sr.end();
+    public Player getPlayer(){
+        return player;
     }
 
-    public void RenderEnemy(){
-        //renders the monster as a cube on the screen
-        //temporary and will be replaced with an actual character of some sorts
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(enemy.getColour());
-        sr.rect(enemy.getX(), enemy.getY(), enemy.getW(), enemy.getH());
-        sr.end();
+    public Enemy getEnemy(){
+        return enemy;
     }
 
-    public void PlayerMovement(){
-        //movement section, moving the player, up, down, left, and right on the screen
-        if (Gdx.input.isKeyPressed(Input.Keys.W)){
-            //checks weather the next move is valid to move in a free space and not a blocked area
-            //blocked areas per world/section will be listed in the collisions class and player position sent there to check if the move is valid or not
-            //passes the current player x and new player y coordinate (or verse versa) into the collisions class
-            if (!collision.CheckValidMove(player.getX(), player.getY() + (500 * Gdx.graphics.getDeltaTime()))) {
-                //executes the move
-                player.setY(player.getY() + (500 * Gdx.graphics.getDeltaTime()));
-            }
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.A)){
-            if (!collision.CheckValidMove(player.getX() - (500 * Gdx.graphics.getDeltaTime()), player.getY())) {
-                player.setX(player.getX() - (500 * Gdx.graphics.getDeltaTime()));
-            }
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            if (!collision.CheckValidMove(player.getX(), player.getY() - (500 * Gdx.graphics.getDeltaTime()))) {
-                player.setY(player.getY() - (500 * Gdx.graphics.getDeltaTime()));
-            }
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.D)){
-            if (!collision.CheckValidMove(player.getX() + (500 * Gdx.graphics.getDeltaTime()), player.getY())) {
-                player.setX(player.getX() + (500 * Gdx.graphics.getDeltaTime()));
-            }
-        }
+    public SpriteBatch getBatch(){
+        return batch;
     }
 
-    public void BackgroundTextureChangeDetection(){
-        HasTransitioned = false;
-        //checks if the player reaches a certain point on the screen
-        //proper boundaries to be set once complete worlds are made
-        if (player.getY() > 980 && !HasTransitioned && CurrentTextureY <= 3) {
-            //changes the current texture on corresponding axis to where the player moves
-            CurrentTextureY++;
-            //resets player location to centre of screen
-            //once final worlds are made the position will be set to correct sides
-            //e.g. enters on left to player will be on right side on next screen
-            player.setX(960);
-            player.setY(540);
-            //allows the screen to change
-            HasTransitioned = true;
-        }
-
-        else if (player.getY() < 100 && !HasTransitioned && CurrentTextureY >= 1){
-            CurrentTextureY--;
-            player.setX(960);
-            player.setY(540);
-            HasTransitioned = true;
-        }
-
-        else if (player.getX() > 1820 && !HasTransitioned && CurrentTextureX <= 3){
-            CurrentTextureX++;
-            player.setX(960);
-            player.setY(540);
-            HasTransitioned = true;
-        }
-
-        else if (player.getX() < 100 && !HasTransitioned && CurrentTextureX >= 1){
-            CurrentTextureX--;
-            player.setX(960);
-            player.setY(540);
-            HasTransitioned = true;
-        }
+    public Collision getCollision(){
+        return collision;
     }
 
-    public void QuitOnEsc() {
-        //program quits once esc is pressed on the keyboard by the user
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            Gdx.app.exit();
-            System.exit(-1);
-        }
+    public Texture[][] getBackgroundTexture(){
+        return BackgroundTexture;
+    }
+
+    public int getCurrentTextureX(){
+        return CurrentTextureX;
+    }
+
+    public int getCurrentTextureY(){
+        return CurrentTextureY;
+    }
+
+    public void setCurrentTextureX(int x){
+        CurrentTextureX = x;
+    }
+
+    public void setCurrentTextureY(int y){
+        CurrentTextureY = y;
+    }
+
+    public boolean getHasTransitioned(){
+        return HasTransitioned;
+    }
+
+    public void setHasTransitioned(boolean hasTransitioned){
+        HasTransitioned = hasTransitioned;
     }
 
     @Override
     public void dispose() {
+        super.dispose();
         sr.dispose();
         batch.dispose();
         for (Texture[] textures : BackgroundTexture) {
