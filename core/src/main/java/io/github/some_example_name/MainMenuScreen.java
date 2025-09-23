@@ -24,7 +24,7 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         // Load UI skin (you'll need a skin file)
-        skin = new Skin(Gdx.files.internal("uiskin.json#"));
+        skin = new Skin(Gdx.files.internal("glassy-ui.json"));
 
         // Create main table for layout
         table = new Table();
@@ -36,8 +36,8 @@ public class MainMenuScreen implements Screen {
 
     private void createMenu() {
         // Title label
-        Label titleLabel = new Label("My Game", skin, "title");
-        table.add(titleLabel).padBottom(50).row();
+        //Label titleLabel = new Label("My Game", skin, "title");
+        //table.add(titleLabel).padBottom(50).row();
 
         // Play button
         TextButton playButton = new TextButton("Play", skin);

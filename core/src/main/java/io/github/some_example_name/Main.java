@@ -171,9 +171,9 @@ public class Main extends Game {
     public void dispose() {
         sr.dispose();
         batch.dispose();
-        for (int i = 0; i < BackgroundTexture.length; i++){
-            for (int j = 0; j < BackgroundTexture[i].length; j++){
-                BackgroundTexture[i][j].dispose();
+        for (Texture[] textures : BackgroundTexture) {
+            for (Texture texture : textures) {
+                texture.dispose();
             }
         }
     }
