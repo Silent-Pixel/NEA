@@ -32,9 +32,9 @@ public class MainMenuScreen implements Screen {
     }
 
     private void createMenu() {
-        //Not a clue what this does but breaks the program when uncommented
-        //Label titleLabel = new Label("My Game", skin, "title");
-        //Stable.add(titleLabel).padBottom(50).row();
+        //Displays the game name (currently only "my game") on top of the buttons
+        Label titleLabel = new Label("My Game", skin);
+        table.add(titleLabel).padBottom(50).row();
 
         //Creating the play button and starts the game screen class which has the code for the game
         TextButton playButton = new TextButton("Play", skin);
