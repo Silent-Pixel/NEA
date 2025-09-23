@@ -1,6 +1,7 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -11,7 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.util.Random;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Main extends ApplicationAdapter {
+public class Main extends Game {
 
     //creating variables
     ShapeRenderer sr;
@@ -37,6 +38,7 @@ public class Main extends ApplicationAdapter {
         CurrentTextureX = 2;
         CurrentTextureY = 2;
 
+        setScreen(new MainMenuScreen());
         BackgroundTextureSetting();
     }
 
