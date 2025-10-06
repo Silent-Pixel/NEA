@@ -28,13 +28,13 @@ public class MainMenuScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
 
-        createMenu();
+        CreateMenu();
     }
 
-    private void createMenu() {
+    private void CreateMenu() {
         //Displays the game name (currently only "my game") on top of the buttons
-        Label titleLabel = new Label("My Game", skin);
-        table.add(titleLabel).padBottom(50).row();
+        Label TitleLabel = new Label("My Game", skin);
+        table.add(TitleLabel).padBottom(50).row();
 
         //Creating the play button and starts the game screen class which has the code for the game
         TextButton playButton = new TextButton("Play", skin);
@@ -45,17 +45,17 @@ public class MainMenuScreen implements Screen {
                 ((Main)Gdx.app.getApplicationListener()).StartGame();
             }
         });
-        table.add(playButton).width(200).height(60).padBottom(20).row();
+        table.add(playButton).width(230).height(100).padBottom(20).row();
 
         //Creating the ptions button (currently does nothing)
         TextButton optionsButton = new TextButton("Options", skin);
         optionsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Options button clicked!");
+                //code for button here
             }
         });
-        table.add(optionsButton).width(200).height(60).padBottom(20).row();
+        table.add(optionsButton).width(230).height(100).padBottom(20).row();
 
         //Creating exit button which takes user back to screen when the esc key is pressed and then quits program when the exit button is pressed
         TextButton exitButton = new TextButton("Exit", skin);
@@ -65,7 +65,7 @@ public class MainMenuScreen implements Screen {
                 Gdx.app.exit();
             }
         });
-        table.add(exitButton).width(200).height(60).row();
+        table.add(exitButton).width(230).height(100).row();
     }
 
     @Override
