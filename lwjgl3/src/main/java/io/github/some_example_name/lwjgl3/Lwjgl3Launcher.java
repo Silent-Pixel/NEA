@@ -22,8 +22,8 @@ public class Lwjgl3Launcher {
         configuration.setTitle("NEA");
         configuration.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate);
         configuration.useVsync(false);
-        configuration.setWindowedMode(2560, 1440);
-        configuration.setFullscreenMode(PrimaryScreen);
+        configuration.setWindowedMode(1920, 1080);
+        //configuration.setFullscreenMode(PrimaryScreen);
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         return configuration;
     }
