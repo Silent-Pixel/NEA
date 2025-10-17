@@ -13,10 +13,10 @@ import java.util.Random;
 
 public class GameScreen implements Screen {
 
-    private Main game;
+    private Main main;
     private static final Player player = new Player(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 25, 25, Color.LIME);
     ShapeRenderer sr = new ShapeRenderer();
-    private static final Enemy enemy = new Enemy(960, 340, 25, 25, Color.DARK_GRAY);;
+    private static final Enemy enemy = new Enemy(960, 340, 25, 25, Color.DARK_GRAY);
     private static Random random = new Random();
     SpriteBatch batch = new SpriteBatch();
     Collision collision = new Collision();
@@ -27,7 +27,7 @@ public class GameScreen implements Screen {
     private static boolean TextureInit = false;
 
     public GameScreen(Main game){
-        this.game = game;
+        this.main = game;
     }
 
     @Override
@@ -158,7 +158,7 @@ public class GameScreen implements Screen {
     public void GoToMainMenuOnEsc() {
         //program will go to main menu when player presses esc
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            game.setScreen(new MainMenuScreen());
+            main.setScreen(new MainMenuScreen());
         }
     }
 
