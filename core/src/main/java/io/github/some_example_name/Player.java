@@ -4,10 +4,12 @@ import com.badlogic.gdx.graphics.Color;
 
 public class Player {
 
+    //Creates the variables for the player
     private float x, y;
     private int w, h;
     private Color Colour;
 
+    //Receives the player x and y position, the width and height of the monster shape, and the colour from GameScreen class
     public Player(int x, int y, int w, int h, Color colour) {
         this.x = x;
         this.y = y;
@@ -16,6 +18,7 @@ public class Player {
         Colour = colour;
     }
 
+    //The getters and setters allows the player x, y, w, h, and colour elements to get read and used for what may need be
     public float getX() {
         return x;
     }

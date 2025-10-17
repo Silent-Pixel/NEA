@@ -18,10 +18,15 @@ public class Lwjgl3Launcher {
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
+        //Stets the title to "NEA" of the current running window/program
         configuration.setTitle("NEA");
+        //Gets the refresh rate of the primary monitor and caps the application fps to the displays refresh rate
         configuration.setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate);
+        //Disables virtual synchronisation, enabled by default and caps fps but adds input delay
         configuration.useVsync(false);
+        //Sets the application to run in windows mode in the configured resolution, that being 1920x180 pixels
         configuration.setWindowedMode(1920, 1080);
+        //Sets the icon of the running application which can be seen in the taskbar and top left of the running window
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         return configuration;
     }

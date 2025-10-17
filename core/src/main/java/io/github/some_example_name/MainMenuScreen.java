@@ -21,9 +21,7 @@ public class MainMenuScreen implements Screen {
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
         skin = new Skin(Gdx.files.internal("glassy-ui.json"));
-
         table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
@@ -32,22 +30,18 @@ public class MainMenuScreen implements Screen {
     }
 
     private void CreateMenu() {
-        //Displays the game name (currently only "my game") on top of the buttons
         Label TitleLabel = new Label("My Game", skin);
         table.add(TitleLabel).padBottom(50).row();
 
-        //Creating the play button and starts the game screen class which has the code for the game
         TextButton playButton = new TextButton("Play", skin);
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //Changed to the gamescreen to allow the game to start
                 ((Main)Gdx.app.getApplicationListener()).StartGame();
             }
         });
         table.add(playButton).width(230).height(100).padBottom(20).row();
 
-        //Creating the ptions button (currently does nothing)
         TextButton optionsButton = new TextButton("Options", skin);
         optionsButton.addListener(new ClickListener() {
             @Override
@@ -57,7 +51,6 @@ public class MainMenuScreen implements Screen {
         });
         table.add(optionsButton).width(230).height(100).padBottom(20).row();
 
-        //Creating exit button which takes user back to screen when the esc key is pressed and then quits program when the exit button is pressed
         TextButton exitButton = new TextButton("Exit", skin);
         exitButton.addListener(new ClickListener() {
             @Override
@@ -70,7 +63,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        //Clears the screen
         Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
