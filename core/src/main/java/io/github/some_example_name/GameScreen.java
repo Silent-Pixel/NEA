@@ -3,13 +3,28 @@ package io.github.some_example_name;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
+import java.util.Random;
 
 public class GameScreen implements Screen {
 
     private Main game;
+    private static final Player player = new Player(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 25, 25, Color.LIME);
+    ShapeRenderer sr = new ShapeRenderer();
+    private static final Enemy enemy = new Enemy(960, 340, 25, 25, Color.DARK_GRAY);;
+    private static Random random = new Random();
+    SpriteBatch batch = new SpriteBatch();
+    Collision collision = new Collision();
+    private static Texture[][] BackgroundTexture = new Texture[5][5];
+    private static int CurrentTextureX = 2, CurrentTextureY = 2;
+    private static boolean HasTransitioned;
+
+    private static boolean TextureInit = false;
 
     public GameScreen(Main game){
         this.game = game;
@@ -17,7 +32,22 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        if (!TextureInit){
+            BackgroundTextureSetting();
+            TextureInit = true;
+        }
 
+    }
+
+    private void BackgroundTextureSetting(){
+        //for loop going through a 2d 5x5 array/grid and setting a random world to each coordinate
+        //this is temporary and will be replaced with an algorithm that makes a proper path with different world segments rather than randomly picking through premade ones.
+        for (int i = 0; i < BackgroundTexture.length; i++){
+            for (int j = 0; j < BackgroundTexture[i].length; j++){
+                int RandomNum = random.nextInt(5) + 1;
+                BackgroundTexture[i][j] = new Texture("worlds/world_" + RandomNum + ".png");
+            }
+        }
     }
 
     @Override
@@ -32,18 +62,15 @@ public class GameScreen implements Screen {
 
     public void BackgroundTextureChanging(){
         //draws the current loaded world in 2,2 onto the players screen at 0,0 on the screen (bottom left) in a resolution of 1920x1080
-        SpriteBatch batch = game.getBatch();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(game.getBackgroundTexture()[game.getCurrentTextureX()][game.getCurrentTextureY()], 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(BackgroundTexture[CurrentTextureX][CurrentTextureY], 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
     }
 
     public void RenderPlayer(){
         //renders the player as a cube on the screen
         //temporary and will be replaced with an actual character of some sorts
-        ShapeRenderer sr = game.getSr();
-        Player player = game.getPlayer();
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(player.getColour());
         sr.rect(player.getX(), player.getY(), player.getW(), player.getH());
@@ -53,8 +80,6 @@ public class GameScreen implements Screen {
     public void RenderEnemy(){
         //renders the monster as a cube on the screen
         //temporary and will be replaced with an actual character of some sorts
-        ShapeRenderer sr = game.getSr();
-        Enemy enemy = game.getEnemy();
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(enemy.getColour());
         sr.rect(enemy.getX(), enemy.getY(), enemy.getW(), enemy.getH());
@@ -63,8 +88,6 @@ public class GameScreen implements Screen {
 
     public void PlayerMovement(){
         //movement section, moving the player, up, down, left, and right on the screen
-        Player player = game.getPlayer();
-        Collision collision = game.getCollision();
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
             //checks weather the next move is valid to move in a free space and not a blocked area
             //blocked areas per world/section will be listed in the collisions class and player position sent there to check if the move is valid or not
@@ -95,41 +118,40 @@ public class GameScreen implements Screen {
     }
 
     public void BackgroundTextureChangeDetection(){
-        Player player = game.getPlayer();
-        game.setHasTransitioned(false);
+        HasTransitioned = false;
         //checks if the player reaches a certain point on the screen
         //proper boundaries to be set once complete worlds are made
-        if (player.getY() > 980 && !game.HasTransitioned && game.getCurrentTextureY() <= 3) {
+        if (player.getY() > 980 && !HasTransitioned && CurrentTextureY <= 3) {
             //changes the current texture on corresponding axis to where the player moves
-            game.setCurrentTextureY(game.getCurrentTextureX() + 1);
+            CurrentTextureY++;
             //resets player location to centre of screen
             //once final worlds are made the position will be set to correct sides
             //e.g. enters on left to player will be on right side on next screen
             player.setX(960);
             player.setY(540);
             //allows the screen to change
-            game.setHasTransitioned(true);
+            HasTransitioned = true;
         }
 
-        else if (player.getY() < 100 && !game.getHasTransitioned() && game.getCurrentTextureY() >= 1){
-            game.setCurrentTextureY(game.getCurrentTextureY() - 1);
+        else if (player.getY() < 100 && !HasTransitioned && CurrentTextureY >= 1){
+            CurrentTextureY--;
             player.setX(960);
             player.setY(540);
-            game.setHasTransitioned(true);
+            HasTransitioned = true;
         }
 
-        else if (player.getX() > 1820 && !game.getHasTransitioned() && game.getCurrentTextureX() <= 3){
-            game.setCurrentTextureX(game.getCurrentTextureX() + 1);
+        else if (player.getX() > 1820 && !HasTransitioned && CurrentTextureX <= 3){
+            CurrentTextureX++;
             player.setX(960);
             player.setY(540);
-            game.setHasTransitioned(true);
+            HasTransitioned = true;
         }
 
-        else if (player.getX() < 100 && !game.getHasTransitioned() && game.getCurrentTextureX() >= 1){
-            game.setCurrentTextureX(game.getCurrentTextureX() - 1);
+        else if (player.getX() < 100 && !HasTransitioned && CurrentTextureX >= 1){
+            CurrentTextureX--;
             player.setX(960);
             player.setY(540);
-            game.setHasTransitioned(true);
+            HasTransitioned = true;
         }
     }
 
@@ -162,6 +184,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        sr.dispose();
+        batch.dispose();
     }
 }
