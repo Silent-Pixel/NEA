@@ -41,18 +41,24 @@ public class GameScreen implements Screen {
 
     //Collision to pass through values into collision class to check if the next player move is valid or not
     Collision collision = new Collision();
+    TileMap tileMap = new TileMap();
 
     @Override
     public void show() {
         //Checks weather the TextureInitialised boolean flag is set to false (technically not true which is what !TexturesInitialised means)
         if (!TexturesInitialised){
             //Jumps to the BackgroundTextureSetting method bellow and sets the 5x5 grid with random world images
-            BackgroundTextureSetting();
+            TestingFunction();
+            //BackgroundTextureSetting();
             //Once the method has finished running, it returns here and then sets the TextureInitialised boolean flag to true which prevents the method from running again
             // and redoing all the images which results in a different world being put in the [2,2] position when going from the GameScreen and MainMenuScreen. This boolean
             // flag prevents the 5x5 grid from resetting
             TexturesInitialised = true;
         }
+    }
+
+    private void TestingFunction(){
+        tileMap.create();
     }
 
     private void BackgroundTextureSetting(){
@@ -76,11 +82,12 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         //The render loops constantly repeats which gives the effect of the program running at high fps while at it does is repeat code very quickly.
-        BackgroundTextureChanging();
+        //BackgroundTextureChanging();
+        tileMap.render();
         RenderPlayer();
         RenderEnemy();
-        PlayerMovement();
-        BackgroundTextureChangeDetection();
+        //PlayerMovement();
+        //BackgroundTextureChangeDetection();
         GoToMainMenuOnEsc();
     }
 
@@ -227,5 +234,6 @@ public class GameScreen implements Screen {
                 texture.dispose();
             }
         }
+        tileMap.dispose();
     }
 }

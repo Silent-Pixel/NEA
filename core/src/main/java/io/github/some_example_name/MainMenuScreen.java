@@ -21,7 +21,7 @@ public class MainMenuScreen implements Screen {
     public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("glassy-ui.json"));
+        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
