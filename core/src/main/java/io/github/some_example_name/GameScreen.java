@@ -29,10 +29,7 @@ public class GameScreen implements Screen {
     //The declared variables are then also set and put as static to avoid them being reset to the default values when initially made
     //E.g. CurrentTextureX is set at 2 to begin with and then later increased or decreased by one and keeps it as the new updated value rather than getting it back to 2
     // when the program changed from the GameScreen to the MainMenuScreen.
-    private static Random random = new Random();
     private static Texture[][] BackgroundTexture = new Texture[5][5];
-    private static int CurrentTextureX = 2, CurrentTextureY = 2;
-    private static boolean HasTransitioned;
     private static boolean TexturesInitialised = false;
 
     //Declared and set variables which allow the enemy, player, and world images to be displayed
@@ -48,8 +45,7 @@ public class GameScreen implements Screen {
         //Checks weather the TextureInitialised boolean flag is set to false (technically not true which is what !TexturesInitialised means)
         if (!TexturesInitialised){
             //Jumps to the BackgroundTextureSetting method bellow and sets the 5x5 grid with random world images
-            TestingFunction();
-            //BackgroundTextureSetting();
+            tileMap.create();
             //Once the method has finished running, it returns here and then sets the TextureInitialised boolean flag to true which prevents the method from running again
             // and redoing all the images which results in a different world being put in the [2,2] position when going from the GameScreen and MainMenuScreen. This boolean
             // flag prevents the 5x5 grid from resetting
@@ -57,49 +53,14 @@ public class GameScreen implements Screen {
         }
     }
 
-    private void TestingFunction(){
-        tileMap.create();
-    }
-
-    private void BackgroundTextureSetting(){
-        //The grid in which are the textures are loaded looks like this:
-        //[0 1 2 3 4]
-        //[0 1 2 3 4]
-        //[0 1 2 3 4]
-        //[0 1 2 3 4]
-        //[0 1 2 3 4]
-        //So from i (x coordinates), it will go through every j (y coordinates)
-        //E.g. starting at i=0 it will do i=0 then j=0, j=1, etc.
-        //At every cord it will choose a random number and then put a world with that number into that slot
-        for (int i = 0; i < BackgroundTexture.length; i++){
-            for (int j = 0; j < BackgroundTexture[i].length; j++){
-                int RandomNum = random.nextInt(9) + 1;
-                BackgroundTexture[i][j] = new Texture("worlds/world_" + RandomNum + ".png");
-            }
-        }
-    }
-
     @Override
     public void render(float delta) {
         //The render loops constantly repeats which gives the effect of the program running at high fps while at it does is repeat code very quickly.
-        //BackgroundTextureChanging();
         tileMap.render();
         RenderPlayer();
         RenderEnemy();
-        //PlayerMovement();
-        //BackgroundTextureChangeDetection();
+        PlayerMovement();
         GoToMainMenuOnEsc();
-    }
-
-    //This method is in charge of drawing the current world map depending on where the player currently is
-    public void BackgroundTextureChanging(){
-        //Clears the screen, removes what was drawn in the previous frame so that the drawn images don't overlap each other.
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        batch.begin();
-        //Draws the image located in BackgroundTexture 2d array based on the CurrentTextureX/Y which is changed depending on whether the player moves left/right or up/down
-        //Draws the image at the origin of the screen (being 0,0 or the bottom left) in the resolution of 1920x100 pixels.
-        batch.draw(BackgroundTexture[CurrentTextureX][CurrentTextureY], 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.end();
     }
 
     //This method is in charge of rendering in the player as a cube on the users screen
@@ -154,45 +115,6 @@ public class GameScreen implements Screen {
             if (!collision.CheckValidMove(player.getX() + (500 * Gdx.graphics.getDeltaTime()), player.getY())) {
                 player.setX(player.getX() + (500 * Gdx.graphics.getDeltaTime()));
             }
-        }
-    }
-
-    //This method is in charge of detecting when the player has reached the left, right, top or bottom side of the world and then move onto the next one.
-    public void BackgroundTextureChangeDetection(){
-        //So that it isn't constantly changing HasTransitioned flag is set to false
-        HasTransitioned = false;
-        //Checks if the player position is greater than a certain value, here its for top transition, doesn't allow for anymore transitions if the player is at the edge of the
-        // 2D array
-        if (player.getY() > 980 && !HasTransitioned && CurrentTextureY <= 3) {
-            //The Y texture is increased by one with the player getting sent back to the centre of the screen, obviously once tiled maps are made it would be stood next to
-            // where the player walked in rather than getting teleported
-            CurrentTextureY++;
-            player.setX(960);
-            player.setY(540);
-            //HasTransitioned flag then gets set to true so that the map doesn't scroll through multiple times when at the detection area
-            HasTransitioned = true;
-        }
-
-        //Same is applied to the rest of this method just different values are set for the appropriate X and Y values
-        else if (player.getY() < 100 && !HasTransitioned && CurrentTextureY >= 1){
-            CurrentTextureY--;
-            player.setX(960);
-            player.setY(540);
-            HasTransitioned = true;
-        }
-
-        else if (player.getX() > 1820 && !HasTransitioned && CurrentTextureX <= 3){
-            CurrentTextureX++;
-            player.setX(960);
-            player.setY(540);
-            HasTransitioned = true;
-        }
-
-        else if (player.getX() < 100 && !HasTransitioned && CurrentTextureX >= 1){
-            CurrentTextureX--;
-            player.setX(960);
-            player.setY(540);
-            HasTransitioned = true;
         }
     }
 
