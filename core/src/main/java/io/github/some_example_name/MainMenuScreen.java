@@ -16,6 +16,7 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     private Skin skin;
     private Table table;
+    boolean Clickable;
 
     @Override
     public void show() {
@@ -26,10 +27,12 @@ public class MainMenuScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
 
+
         CreateMenu();
     }
 
     private void CreateMenu() {
+        Clickable = true;
         Label TitleLabel = new Label("My Game", skin);
         table.add(TitleLabel).padBottom(50).row();
 
@@ -37,7 +40,10 @@ public class MainMenuScreen implements Screen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Main)Gdx.app.getApplicationListener()).StartGame();
+                if (Clickable) {
+                    ((Main) Gdx.app.getApplicationListener()).StartGame();
+                    Clickable = false;
+                }
             }
         });
         table.add(playButton).width(230).height(100).padBottom(20).row();
@@ -46,7 +52,10 @@ public class MainMenuScreen implements Screen {
         optionsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //code for button here
+                if (Clickable){
+                    //code for button here
+                    Clickable = false;
+                }
             }
         });
         table.add(optionsButton).width(230).height(100).padBottom(20).row();
@@ -55,7 +64,10 @@ public class MainMenuScreen implements Screen {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
+                if (Clickable){
+                    Gdx.app.exit();
+                    Clickable = false;
+                }
             }
         });
         table.add(exitButton).width(230).height(100).row();

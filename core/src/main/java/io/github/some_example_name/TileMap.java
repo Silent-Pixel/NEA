@@ -35,8 +35,6 @@ public class TileMap extends ApplicationAdapter {
         {120, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121 ,121, 121, 121, 121, 121, 121, 121, 121, 121, 125}
     };
 
-    private final int TileSize = 32;
-
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -44,7 +42,7 @@ public class TileMap extends ApplicationAdapter {
         camera.setToOrtho(false, 1920, 1080);
 
         tileset = new Texture(Gdx.files.internal("assets/AssetsForMaps.png"));
-        tiles = TextureRegion.split(tileset, TileSize, TileSize);
+        tiles = TextureRegion.split(tileset, 32, 32);
     }
 
     @Override
@@ -61,7 +59,7 @@ public class TileMap extends ApplicationAdapter {
                 int tileX = leveltest[i][j] % tiles[0].length; // column in the tileset
                 int tileY = leveltest[i][j] / tiles[0].length; // row in the tileset
 
-                batch.draw(tiles[tileY][tileX], j * TileSize * 2, (leveltest.length - 1 - i) * TileSize * 2, TileSize * 2, TileSize * 2);
+                batch.draw(tiles[tileY][tileX], j * 64, (leveltest.length - 1 - i) * 64, 64, 64);
             }
         }
         batch.end();
