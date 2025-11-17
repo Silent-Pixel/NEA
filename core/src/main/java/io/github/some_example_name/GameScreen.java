@@ -20,11 +20,9 @@ public class GameScreen implements Screen {
 
     private static final Enemy enemy = new Enemy(960, 340, 25, 25, Color.DARK_GRAY);
 
-    private static Texture[][] BackgroundTexture = new Texture[5][5];
-    private static boolean TexturesInitialised = false;
+    private static boolean IsInitialised = false;
 
     ShapeRenderer sr = new ShapeRenderer();
-    SpriteBatch batch = new SpriteBatch();
 
     TileMap tileMap = new TileMap();
     PlayerAnimation playerAnimation = new PlayerAnimation();
@@ -32,10 +30,10 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
 
-        if (!TexturesInitialised){
+        if (!IsInitialised){
             tileMap.create();
             playerAnimation.create();
-            TexturesInitialised = true;
+            IsInitialised = true;
         }
     }
 
@@ -86,12 +84,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         sr.dispose();
-        batch.dispose();
-        for (Texture[] textures : BackgroundTexture) {
-            for (Texture texture : textures) {
-                texture.dispose();
-            }
-        }
         tileMap.dispose();
         playerAnimation.dispose();
     }
