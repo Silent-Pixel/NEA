@@ -18,8 +18,10 @@ public class PlayerAnimation extends ApplicationAdapter {
 
     SpriteBatch batch;
 
-    float StateTime, PlayerX, PlayerY;
+    float StateTime, PlayerX, PlayerY, PlayerSpeed;
+    int PlayerW;
     boolean IsKeyPressed;
+    TextureRegion CurrentFrame;
 
     @Override
     public void create() {
@@ -49,45 +51,49 @@ public class PlayerAnimation extends ApplicationAdapter {
         StateTime = 0f;
         PlayerX = 250;
         PlayerY = 250;
+        PlayerW = 350;
     }
 
     @Override
     public void render() {
         StateTime += Gdx.graphics.getDeltaTime();
+        PlayerSpeed = 300 * Gdx.graphics.getDeltaTime();
         IsKeyPressed = false;
 
-        batch.begin();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)){
-
-            if (Gdx.input.isKeyPressed(Input.Keys.D)){
-                TextureRegion CurrentWalkFrame = PlayerWalkAnimation.getKeyFrame(StateTime, true);
-                batch.draw(CurrentWalkFrame, PlayerX, PlayerY, 350, 350);
-                PlayerX = PlayerX + (300 * Gdx.graphics.getDeltaTime());
-            }
-
-            if (Gdx.input.isKeyPressed(Input.Keys.A)){
-                TextureRegion CurrentWalkFrame = PlayerWalkAnimation.getKeyFrame(StateTime, true);
-                batch.draw(CurrentWalkFrame, PlayerX, PlayerY, 350, 350);
-                PlayerX = PlayerX - (300 * Gdx.graphics.getDeltaTime());
-            }
-
-            if (Gdx.input.isKeyPressed(Input.Keys.W)){
-                TextureRegion CurrentWalkFrame = PlayerWalkAnimation.getKeyFrame(StateTime, true);
-                batch.draw(CurrentWalkFrame, PlayerX, PlayerY, 350, 350);
-                PlayerY = PlayerY + (300 * Gdx.graphics.getDeltaTime());
-            }
-
-            if (Gdx.input.isKeyPressed(Input.Keys.S)){
-                TextureRegion CurrentWalkFrame = PlayerWalkAnimation.getKeyFrame(StateTime, true);
-                batch.draw(CurrentWalkFrame, PlayerX, PlayerY, 350, 350);
-                PlayerY = PlayerY - (300 * Gdx.graphics.getDeltaTime());
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.W)){
+            PlayerY += PlayerSpeed;
+            IsKeyPressed = true;
         }
 
+        if (Gdx.input.isKeyPressed(Input.Keys.A)){
+            PlayerX -= PlayerSpeed;
+            IsKeyPressed = true;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.S)){
+            PlayerY -= PlayerSpeed;
+            IsKeyPressed = true;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.D)){
+            PlayerX += PlayerSpeed;
+            IsKeyPressed = true;
+        }
+
+        if (IsKeyPressed){
+            CurrentFrame = PlayerWalkAnimation.getKeyFrame(StateTime, true);
+        }
         else {
-            TextureRegion CurrentIdleFrame = PlayerIdleAnimation.getKeyFrame(StateTime, true);
-            batch.draw(CurrentIdleFrame, PlayerX, PlayerY , 350, 350);
+            CurrentFrame = PlayerIdleAnimation.getKeyFrame(StateTime, true);
+        }
+
+        batch.begin();
+        if (Gdx.input.isKeyPressed(Input.Keys.A)){
+            batch.draw(CurrentFrame, PlayerX + 51, PlayerY, (float) -(3.5 * 17), (float) (3.5 * 22));
+        }
+        else {
+            batch.draw(CurrentFrame, PlayerX, PlayerY, (float) (3.5 * 17), (float) (3.5 * 22));
         }
 
         batch.end();
