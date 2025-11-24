@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import org.w3c.dom.Text;
 
 public class PlayerAnimation extends ApplicationAdapter {
 
@@ -16,15 +17,20 @@ public class PlayerAnimation extends ApplicationAdapter {
     Animation<TextureRegion> PlayerWalkAnimation;
     Texture PlayerWalkTile;
 
+    Animation<TextureRegion> PlayerAttack01Animation;
+    Texture PlayerAttack01Tile;
+
     SpriteBatch batch;
 
-    float StateTime, PlayerX, PlayerY, PlayerSpeed;
-    int PlayerW;
+    float StateTime, PlayerSpeed;
     boolean IsKeyPressed;
     TextureRegion CurrentFrame;
 
+    Player Player;
+
     @Override
     public void create() {
+        Player = new Player(250, 250, 350, 350);
         PlayerIdleTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Idle.png"));
         TextureRegion[][] PlayerIdleTextureRegion = TextureRegion.split(PlayerIdleTile, PlayerIdleTile.getWidth() / 6, PlayerIdleTile.getHeight());
         TextureRegion[] IdleFrame = new TextureRegion[6];
@@ -47,37 +53,44 @@ public class PlayerAnimation extends ApplicationAdapter {
         }
         PlayerWalkAnimation = new Animation<>(0.08f, WalkFrame);
 
+        PlayerAttack01Tile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Attack01.png"));
+        TextureRegion[][] PlayerAttack01TextureRegion = TextureRegion.split(PlayerAttack01Tile, PlayerAttack01Tile.getWidth() / 6, PlayerAttack01Tile.getHeight());
+        TextureRegion[] Attack01Frame = new TextureRegion[6];
+        int Attack01Index = 0;
+        for (int i = 0; i < 1; i++){
+            for (int j = 0; j < 6; j++){
+                Attack01Frame[Attack01Index++] = PlayerAttack01TextureRegion[i][j];
+            }
+        }
+        PlayerAttack01Animation = new Animation<>(0.1f, Attack01Frame);
+
+
         batch = new SpriteBatch();
         StateTime = 0f;
-        PlayerX = 250;
-        PlayerY = 250;
-        PlayerW = 350;
     }
 
     @Override
     public void render() {
         StateTime += Gdx.graphics.getDeltaTime();
-        PlayerSpeed = 300 * Gdx.graphics.getDeltaTime();
         IsKeyPressed = false;
 
-
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
-            PlayerY += PlayerSpeed;
+            Player.setY(Player.getY() + Player.getSpeed());
             IsKeyPressed = true;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
-            PlayerX -= PlayerSpeed;
+            Player.setX(Player.getX() - Player.getSpeed());
             IsKeyPressed = true;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            PlayerY -= PlayerSpeed;
+            Player.setY(Player.getY() - Player.getSpeed());
             IsKeyPressed = true;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
-            PlayerX += PlayerSpeed;
+            Player.setX(Player.getX() + Player.getSpeed());
             IsKeyPressed = true;
         }
 
@@ -90,13 +103,18 @@ public class PlayerAnimation extends ApplicationAdapter {
 
         batch.begin();
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
-            batch.draw(CurrentFrame, PlayerX + 51, PlayerY, (float) -(3.5 * 17), (float) (3.5 * 22));
+            batch.draw(CurrentFrame, Player.getX() + 51, Player.getY(), (float) -(3.5 * 17), (float) (3.5 * 22));
         }
         else {
-            batch.draw(CurrentFrame, PlayerX, PlayerY, (float) (3.5 * 17), (float) (3.5 * 22));
+            batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
         }
-
         batch.end();
+
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
+                batch.begin();
+                batch.draw(PlayerAttack01Animation.getKeyFrame(StateTime, true), Player.getX(), Player.getY(), 350, 350);
+                batch.end();
+        }
     }
 
     @Override
