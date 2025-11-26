@@ -22,8 +22,8 @@ public class PlayerAnimation extends ApplicationAdapter {
 
     SpriteBatch batch;
 
-    float StateTime, PlayerSpeed;
-    boolean IsKeyPressed;
+    float StateTime, AttackTime, PlayerSpeed;
+    boolean IsKeyPressed, IsAttacking;
     TextureRegion CurrentFrame;
 
     Player Player;
@@ -67,11 +67,14 @@ public class PlayerAnimation extends ApplicationAdapter {
 
         batch = new SpriteBatch();
         StateTime = 0f;
+        AttackTime = 0f;
+        IsAttacking = false;
     }
 
     @Override
     public void render() {
         StateTime += Gdx.graphics.getDeltaTime();
+        AttackTime += Gdx.graphics.getDeltaTime();
         IsKeyPressed = false;
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
@@ -94,27 +97,35 @@ public class PlayerAnimation extends ApplicationAdapter {
             IsKeyPressed = true;
         }
 
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+            IsAttacking = true;
+            AttackTime = 0f;
+        }
+
         if (IsKeyPressed){
             CurrentFrame = PlayerWalkAnimation.getKeyFrame(StateTime, true);
         }
+
+        else if (IsAttacking){
+            CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, true);
+
+            if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
+                IsAttacking = false;
+            }
+        }
+
         else {
             CurrentFrame = PlayerIdleAnimation.getKeyFrame(StateTime, true);
         }
 
         batch.begin();
-        if (Gdx.input.isKeyPressed(Input.Keys.A)){
-            batch.draw(CurrentFrame, Player.getX() + 51, Player.getY(), (float) -(3.5 * 17), (float) (3.5 * 22));
+        if (IsAttacking && !IsKeyPressed){
+            batch.draw(CurrentFrame, Player.getX() - 25, Player.getY(), (float) (3.5 * 34), (float) (3.5 * 27));
         }
         else {
             batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
         }
         batch.end();
-
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-                batch.begin();
-                batch.draw(PlayerAttack01Animation.getKeyFrame(StateTime, true), Player.getX(), Player.getY(), 350, 350);
-                batch.end();
-        }
     }
 
     @Override
@@ -122,6 +133,7 @@ public class PlayerAnimation extends ApplicationAdapter {
         batch.dispose();
         PlayerIdleTile.dispose();
         PlayerWalkTile.dispose();
+        PlayerIdleTile.dispose();
     }
 
 

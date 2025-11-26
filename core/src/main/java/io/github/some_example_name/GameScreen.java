@@ -3,12 +3,7 @@ package io.github.some_example_name;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import java.util.Random;
 
 public class GameScreen implements Screen {
 
@@ -17,8 +12,6 @@ public class GameScreen implements Screen {
     }
 
     private Main main;
-
-    private static final Enemy enemy = new Enemy(960, 340, 25, 25, Color.DARK_GRAY);
 
     private static boolean IsInitialised = false;
 
@@ -42,17 +35,8 @@ public class GameScreen implements Screen {
 
         tileMap.render();
         playerAnimation.render();
-        RenderEnemy();
         GoToMainMenuOnEsc();
     }
-
-    public void RenderEnemy(){
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(enemy.getColour());
-        sr.rect(enemy.getX(), enemy.getY(), enemy.getW(), enemy.getH());
-        sr.end();
-    }
-
 
     public void GoToMainMenuOnEsc() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
