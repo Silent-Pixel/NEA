@@ -10,11 +10,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class TileMap extends ApplicationAdapter {
 
-    private SpriteBatch batch;
-    private OrthographicCamera camera;
-    private Texture tileset;
-    private TextureRegion[][] tiles;
-    private int[][] BaseLevel;
+    SpriteBatch batch;
+    OrthographicCamera camera;
+    Texture tileset;
+    TextureRegion[][] tiles;
+    int[][] BaseLevel;
+
+    Levels Levels;
 
     @Override
     public void create() {
@@ -24,8 +26,8 @@ public class TileMap extends ApplicationAdapter {
         tileset = new Texture(Gdx.files.internal("assets/AssetsForMaps.png"));
         tiles = TextureRegion.split(tileset, 32, 32);
         BaseLevel = new int[][]{
-            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 42,43, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5},
-            {20, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 62, 63, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 11, 105},
+            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5},
+            {20, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 11, 105},
             {20, 46, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 82, 83, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 51, 105},
             {20, 46, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 51, 105},
             {20, 46, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 51, 105},
@@ -42,14 +44,6 @@ public class TileMap extends ApplicationAdapter {
             {20, 106, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 111, 105},
             {120, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 125}
         };
-
-        /*for (int i = 0; i < BaseLevel.length; i++){
-            for (int j = 0; j < BaseLevel[i].length; j++){
-                if (BaseLevel[i][j] == 47){
-                    BaseLevel[i][j] = 12;
-                }
-            }
-        }*/
     }
 
     @Override
@@ -70,6 +64,14 @@ public class TileMap extends ApplicationAdapter {
             }
         }
         batch.end();
+    }
+
+    //Tile class
+    //When the player moves in the direction then a new level is generated and player moved into it
+    //Adjust one detail to check it works
+    //Don't bother with validation for now, get the very basic change to work
+    public void LevelCreation(){
+        Levels = new Levels(BaseLevel, 0, 0, 0, 1);
     }
 
     @Override

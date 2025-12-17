@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 public class Enemy {
 
     //Creates the variables for the enemy
-    private float x, y;
-    private int w, h;
-    private Color Colour;
+    float x, y;
+    int w, h;
+    Color Colour;
 
     //Receives the enemy x and y position, the width and height of the monster shape, and the colour from GameScreen class
     public Enemy(float x, float y, int w, int h, Color colour) {

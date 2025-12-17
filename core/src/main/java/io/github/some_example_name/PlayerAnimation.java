@@ -22,15 +22,18 @@ public class PlayerAnimation extends ApplicationAdapter {
 
     SpriteBatch batch;
 
-    float StateTime, AttackTime, PlayerSpeed;
+    float WalkTime, AttackTime, PlayerSpeed;
     boolean IsKeyPressed, IsAttacking;
     TextureRegion CurrentFrame;
 
     Player Player;
+    TileMap TileMap;
 
     @Override
     public void create() {
         Player = new Player(250, 250, 350, 350);
+        TileMap = new TileMap();
+
         PlayerIdleTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Idle.png"));
         TextureRegion[][] PlayerIdleTextureRegion = TextureRegion.split(PlayerIdleTile, PlayerIdleTile.getWidth() / 6, PlayerIdleTile.getHeight());
         TextureRegion[] IdleFrame = new TextureRegion[6];
@@ -66,14 +69,20 @@ public class PlayerAnimation extends ApplicationAdapter {
 
 
         batch = new SpriteBatch();
-        StateTime = 0f;
+        WalkTime = 0f;
         AttackTime = 0f;
         IsAttacking = false;
     }
 
     @Override
     public void render() {
-        StateTime += Gdx.graphics.getDeltaTime();
+
+        movement();
+        LevelChange();
+    }
+
+    public void movement(){
+        WalkTime += Gdx.graphics.getDeltaTime();
         AttackTime += Gdx.graphics.getDeltaTime();
         IsKeyPressed = false;
 
@@ -103,7 +112,7 @@ public class PlayerAnimation extends ApplicationAdapter {
         }
 
         if (IsKeyPressed){
-            CurrentFrame = PlayerWalkAnimation.getKeyFrame(StateTime, true);
+            CurrentFrame = PlayerWalkAnimation.getKeyFrame(WalkTime, true);
         }
 
         else if (IsAttacking){
@@ -115,7 +124,7 @@ public class PlayerAnimation extends ApplicationAdapter {
         }
 
         else {
-            CurrentFrame = PlayerIdleAnimation.getKeyFrame(StateTime, true);
+            CurrentFrame = PlayerIdleAnimation.getKeyFrame(WalkTime, true);
         }
 
         batch.begin();
@@ -126,6 +135,13 @@ public class PlayerAnimation extends ApplicationAdapter {
             batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
         }
         batch.end();
+    }
+
+    public void LevelChange(){
+        if (Player.getY() + 77 > Gdx.graphics.getHeight()){
+            TileMap.LevelCreation();
+            Player.setY(100);
+        }
     }
 
     @Override
