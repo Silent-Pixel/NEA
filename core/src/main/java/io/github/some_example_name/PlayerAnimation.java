@@ -27,11 +27,13 @@ public class PlayerAnimation extends ApplicationAdapter {
     TextureRegion CurrentFrame;
 
     Player Player;
+    EnemyAnimation EnemyAnimation;
     TileMap TileMap;
 
     @Override
     public void create() {
         Player = new Player(250, 250, 350, 350);
+        EnemyAnimation = new EnemyAnimation(Player);
         TileMap = new TileMap();
 
         PlayerIdleTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Idle.png"));
@@ -78,7 +80,7 @@ public class PlayerAnimation extends ApplicationAdapter {
     public void render() {
 
         movement();
-        LevelChange();
+        TestingClass();
     }
 
     public void movement(){
@@ -137,10 +139,15 @@ public class PlayerAnimation extends ApplicationAdapter {
         batch.end();
     }
 
-    public void LevelChange(){
-        if (Player.getY() + 77 > Gdx.graphics.getHeight()){
-            TileMap.LevelCreation();
+    public void TestingClass(){
+        if (Player.getY() + 77 > Gdx.graphics.getHeight()) {
+            TileMap.TestingClassUp();
             Player.setY(100);
+        }
+
+        else if (Player.getY() < 0){
+            TileMap.TestingClassDown();
+            Player.setY(900);
         }
     }
 
@@ -149,7 +156,6 @@ public class PlayerAnimation extends ApplicationAdapter {
         batch.dispose();
         PlayerIdleTile.dispose();
         PlayerWalkTile.dispose();
-        PlayerIdleTile.dispose();
     }
 
 

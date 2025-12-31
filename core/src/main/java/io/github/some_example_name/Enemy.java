@@ -1,24 +1,18 @@
 package io.github.some_example_name;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx;
 
 public class Enemy {
 
-    //Creates the variables for the enemy
-    float x, y;
-    int w, h;
-    Color Colour;
+    float x, y, w, h, speed, health;
 
-    //Receives the enemy x and y position, the width and height of the monster shape, and the colour from GameScreen class
-    public Enemy(float x, float y, int w, int h, Color colour) {
+    public Enemy(float x, float y, float w, float h) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
-        Colour = colour;
     }
 
-    //The getters and setters allows the enemy x, y, w, h, and colour elements to get read and used for what may need be
     public float getX() {
         return x;
     }
@@ -35,27 +29,35 @@ public class Enemy {
         this.y = y;
     }
 
-    public int getW() {
+    public float getW() {
         return w;
     }
 
-    public void setW(int w) {
+    public void setW(float w) {
         this.w = w;
     }
 
-    public int getH() {
+    public float getH() {
         return h;
     }
 
-    public void setH(int h) {
+    public void setH(float h) {
         this.h = h;
     }
 
-    public Color getColour() {
-        return Colour;
+    public float getSpeed() {
+        return 150 * Gdx.graphics.getDeltaTime();
     }
 
-    public void setColour(Color colour) {
-        Colour = colour;
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public float getHealth() {
+        return health;
+    }
+
+    public void setHealth(float health) {
+        this.health = 100;
     }
 }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 public class Player {
 
-    float x, y, w, h, speed;
+    float x, y, w, h, speed, health;
 
     public Player(float x, float y, float w, float h) {
         this.x = x;
@@ -51,5 +51,13 @@ public class Player {
 
     public void setSpeed(float speed) {
         this.speed = speed;
+    }
+
+    public float getHealth() {
+        return health;
+    }
+
+    public void setHealth(float health) {
+        this.health = 100;
     }
 }
