@@ -1,15 +1,14 @@
 package io.github.some_example_name;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import org.w3c.dom.Text;
 
-public class PlayerAnimation extends ApplicationAdapter {
+public class PlayerAnimation implements ApplicationListener {
 
     Animation<TextureRegion> PlayerIdleAnimation;
     Texture PlayerIdleTile;
@@ -25,15 +24,15 @@ public class PlayerAnimation extends ApplicationAdapter {
     float WalkTime, AttackTime, PlayerSpeed;
     boolean IsKeyPressed, IsAttacking;
     TextureRegion CurrentFrame;
-
-    Player Player;
-    EnemyAnimation EnemyAnimation;
     TileMap TileMap;
+    private Player Player;
+
+    public PlayerAnimation(Player Player){
+        this.Player = Player;
+    }
 
     @Override
     public void create() {
-        Player = new Player(250, 250, 350, 350);
-        EnemyAnimation = new EnemyAnimation(Player);
         TileMap = new TileMap();
 
         PlayerIdleTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Idle.png"));
@@ -77,13 +76,28 @@ public class PlayerAnimation extends ApplicationAdapter {
     }
 
     @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
     public void render() {
 
-        movement();
+        Movement();
         TestingClass();
     }
 
-    public void movement(){
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    public void Movement(){
         WalkTime += Gdx.graphics.getDeltaTime();
         AttackTime += Gdx.graphics.getDeltaTime();
         IsKeyPressed = false;

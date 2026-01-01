@@ -1,14 +1,13 @@
 package io.github.some_example_name;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class EnemyAnimation extends ApplicationAdapter {
+public class EnemyAnimation implements ApplicationListener {
 
     Animation<TextureRegion> EnemyIdleAnimation;
     Texture EnemyIdleTile;
@@ -19,12 +18,17 @@ public class EnemyAnimation extends ApplicationAdapter {
     SpriteBatch batch;
     TextureRegion CurrentFrame;
     Enemy Enemy;
-    Player Player;
     float IdleTime, WalkTime;
+
+    private Player Player;
+
+    public EnemyAnimation(Player Player){
+        this.Player = Player;
+    }
 
     @Override
     public void create() {
-        Enemy = new Enemy(500, 500, 350, 350);
+        Enemy = new Enemy();
 
         EnemyIdleTile = new Texture(Gdx.files.internal("assets/Enemy/Slime_Idle_Angry.png"));
         TextureRegion[][] EnemyIdleTextureRegion = TextureRegion.split(EnemyIdleTile, EnemyIdleTile.getWidth() / 4, EnemyIdleTile.getHeight());
@@ -53,8 +57,9 @@ public class EnemyAnimation extends ApplicationAdapter {
         WalkTime = 0f;
     }
 
-    public EnemyAnimation(Player Player){
-        this.Player = Player;
+    @Override
+    public void resize(int width, int height) {
+
     }
 
     @Override
@@ -77,11 +82,36 @@ public class EnemyAnimation extends ApplicationAdapter {
         VeryBasicMovement();
     }
 
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
     public void VeryBasicMovement(){
         batch.begin();
-        if (Enemy.getX() < Player.getX()){
+        if (Enemy.getX() < Player.getX()- 10){
             CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
             Enemy.setX(Enemy.getX() + Enemy.getSpeed());
+        }
+        if (Enemy.getX() > Player.getX() + 10){
+            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
+            Enemy.setX(Enemy.getX() - Enemy.getSpeed());
+        }
+        if (Enemy.getY() < Player.getY() - 10){
+            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
+            Enemy.setY(Enemy.getY() + Enemy.getSpeed());
+        }
+        if (Enemy.getY() > Player.getY() + 10){
+            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
+            Enemy.setY(Enemy.getY() - Enemy.getSpeed());
+        }
+        else {
+            CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime, true);
         }
         batch.draw(CurrentFrame, Enemy.getX(), Enemy.getY(), 2 * 32, 2 * 32);
         batch.end();

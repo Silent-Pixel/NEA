@@ -17,9 +17,10 @@ public class GameScreen implements Screen {
 
     ShapeRenderer sr = new ShapeRenderer();
 
+    Player Player = new Player();
     TileMap TileMap = new TileMap();
-    PlayerAnimation PlayerAnimation = new PlayerAnimation();
-    EnemyAnimation EnemyAnimation = new EnemyAnimation(null);
+    PlayerAnimation PlayerAnimation = new PlayerAnimation(Player);
+    EnemyAnimation EnemyAnimation = new EnemyAnimation(Player);
 
     @Override
     public void show() {
@@ -34,10 +35,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-
         TileMap.render();
-        EnemyAnimation.render();
         PlayerAnimation.render();
+        EnemyAnimation.render();
         GoToMainMenuOnEsc();
     }
 

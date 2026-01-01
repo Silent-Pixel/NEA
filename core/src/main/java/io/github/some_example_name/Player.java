@@ -4,14 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 public class Player {
 
-    float x, y, w, h, speed, health;
-
-    public Player(float x, float y, float w, float h) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-    }
+    float x = 250, y = 250, w, h, speed = 300 * Gdx.graphics.getDeltaTime(), health;
 
     public float getX() {
         return x;
@@ -46,7 +39,7 @@ public class Player {
     }
 
     public float getSpeed() {
-        return 300 * Gdx.graphics.getDeltaTime();
+        return speed;
     }
 
     public void setSpeed(float speed) {

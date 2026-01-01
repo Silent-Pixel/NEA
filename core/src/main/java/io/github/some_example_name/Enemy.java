@@ -4,14 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 public class Enemy {
 
-    float x, y, w, h, speed, health;
-
-    public Enemy(float x, float y, float w, float h) {
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-    }
+    float x = 500, y = 500, w, h, speed = 150 * Gdx.graphics.getDeltaTime(), health;
 
     public float getX() {
         return x;
@@ -46,7 +39,7 @@ public class Enemy {
     }
 
     public float getSpeed() {
-        return 150 * Gdx.graphics.getDeltaTime();
+        return speed;
     }
 
     public void setSpeed(float speed) {
