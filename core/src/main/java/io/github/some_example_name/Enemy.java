@@ -25,7 +25,7 @@ public class Enemy {
         int PlayerTileX = (PlayerX / 64);
         int PlayerTileY = (PlayerY / 64);
 
-        if (EnemyTileX != PlayerTileX || EnemyTileY != PlayerTileY){
+        if (EnemyTileX != PlayerTileX && EnemyTileY != PlayerTileY){
             CurrentPath = DijkstrasPathfinding.FindPath(EnemyTileX, EnemyTileY, PlayerTileX, PlayerTileY);
             if (!CurrentPath.isEmpty()){
                 HasPath = true;
@@ -50,11 +50,17 @@ public class Enemy {
         float ChangeInY = TargetY - y;
         float Distance = (float)Math.sqrt(ChangeInX * ChangeInX + ChangeInY * ChangeInY);
 
-        if (Distance < 10) {
+        float MoveSpeed = speed * Gdx.graphics.getDeltaTime();
+        float MoveX = (ChangeInX / Distance) * MoveSpeed;
+        float MoveY = (ChangeInY / Distance) * MoveSpeed;
+
+        x += MoveX;
+        y += MoveY;
+
+        /*if (Distance < 10) {
             CurrentPathIndex++;
             if (CurrentPathIndex >= CurrentPath.size()) {
                 HasPath = false;
-                return;
             }
         }
         else {
@@ -64,7 +70,7 @@ public class Enemy {
 
             x += MoveX;
             y += MoveY;
-        }
+        }*/
     }
 
     public float getX() {
