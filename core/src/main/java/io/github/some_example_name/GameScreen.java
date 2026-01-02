@@ -20,7 +20,7 @@ public class GameScreen implements Screen {
     Player Player = new Player();
     TileMap TileMap = new TileMap();
     PlayerAnimation PlayerAnimation = new PlayerAnimation(Player);
-    EnemyAnimation EnemyAnimation = new EnemyAnimation(Player);
+    EnemyAnimation EnemyAnimation = new EnemyAnimation(Player, TileMap);
 
     @Override
     public void show() {

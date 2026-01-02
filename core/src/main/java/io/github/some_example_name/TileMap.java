@@ -36,7 +36,7 @@ public class TileMap extends ApplicationAdapter {
         {20, 46, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 51, 105},
         {20, 106, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 107, 111, 105},
         {120, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 121, 125}
-    };;
+    };
 
     Map<GridPoint2, int[][]> LevelMap = new HashMap<>();
     GridPoint2 CurrentLevelCord = new GridPoint2(0, 0);;
@@ -114,6 +114,10 @@ public class TileMap extends ApplicationAdapter {
             System.out.println("Down else statement run");
             System.out.println("Currently in: " + CurrentLevelCord);
         }
+    }
+
+    public int[][] getCurrentLevel(){
+        return CurrentLevel;
     }
 
     @Override

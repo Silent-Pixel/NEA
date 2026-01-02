@@ -20,15 +20,19 @@ public class EnemyAnimation implements ApplicationListener {
     Enemy Enemy;
     float IdleTime, WalkTime;
 
-    private Player Player;
+    private final Player Player;
+    private final TileMap TileMap;
 
-    public EnemyAnimation(Player Player){
+    public EnemyAnimation(Player Player, TileMap TileMap){
         this.Player = Player;
+        this.TileMap = TileMap;
     }
 
     @Override
     public void create() {
-        Enemy = new Enemy();
+        int[][] CurrentMap = TileMap.getCurrentLevel();
+        DijkstrasPathfinding dijkstrasPathfinding = new DijkstrasPathfinding(CurrentMap);
+        Enemy = new Enemy(dijkstrasPathfinding);
 
         EnemyIdleTile = new Texture(Gdx.files.internal("assets/Enemy/Slime_Idle_Angry.png"));
         TextureRegion[][] EnemyIdleTextureRegion = TextureRegion.split(EnemyIdleTile, EnemyIdleTile.getWidth() / 4, EnemyIdleTile.getHeight());
@@ -67,19 +71,17 @@ public class EnemyAnimation implements ApplicationListener {
         IdleTime += Gdx.graphics.getDeltaTime();
         WalkTime += Gdx.graphics.getDeltaTime();
 
-        /*batch.begin();
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)){
+        Enemy.UpdatePath(TileMap.getCurrentLevel(), (int)Player.getX(), (int)Player.getY());
+        Enemy.FollowPath();
+        batch.begin();
+        if (Math.abs(Enemy.getX() - Player.getX()) > 10 || Math.abs(Enemy.getY() - Player.getY()) > 10){
             CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
-            Enemy.setX(Enemy.getX() + Enemy.getSpeed());
         }
-        else{
+        else {
             CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime, true);
         }
-
         batch.draw(CurrentFrame, Enemy.getX(), Enemy.getY(), 2 * 32, 2 * 32);
-        batch.end(); */
-
-        VeryBasicMovement();
+        batch.end();
     }
 
     @Override
@@ -90,31 +92,6 @@ public class EnemyAnimation implements ApplicationListener {
     @Override
     public void resume() {
 
-    }
-
-    public void VeryBasicMovement(){
-        batch.begin();
-        if (Enemy.getX() < Player.getX()- 10){
-            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
-            Enemy.setX(Enemy.getX() + Enemy.getSpeed());
-        }
-        if (Enemy.getX() > Player.getX() + 10){
-            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
-            Enemy.setX(Enemy.getX() - Enemy.getSpeed());
-        }
-        if (Enemy.getY() < Player.getY() - 10){
-            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
-            Enemy.setY(Enemy.getY() + Enemy.getSpeed());
-        }
-        if (Enemy.getY() > Player.getY() + 10){
-            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
-            Enemy.setY(Enemy.getY() - Enemy.getSpeed());
-        }
-        else {
-            CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime, true);
-        }
-        batch.draw(CurrentFrame, Enemy.getX(), Enemy.getY(), 2 * 32, 2 * 32);
-        batch.end();
     }
 
     @Override
