@@ -78,8 +78,6 @@ public class EnemyAnimation implements ApplicationListener {
         Enemy.UpdatePath(TileMap.getCurrentLevel(), (int)Player.getX(), (int)Player.getY());
         Enemy.FollowPath();
 
-        drawPath();
-
         batch.begin();
         if (Math.abs(Enemy.getX() - Player.getX()) > 10 || Math.abs(Enemy.getY() - Player.getY()) > 10){
             CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
@@ -89,49 +87,6 @@ public class EnemyAnimation implements ApplicationListener {
         }
         batch.draw(CurrentFrame, Enemy.getX(), Enemy.getY(), 2 * 32, 2 * 32);
         batch.end();
-    }
-
-    private void drawPath() {
-        if (Enemy.CurrentPath.isEmpty() || !Enemy.HasPath) {
-            return;
-        }
-
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-
-        // Draw circles at each waypoint
-        sr.setColor(Color.YELLOW);
-        for (int i = 0; i < Enemy.CurrentPath.size(); i++) {
-            int[] tile = Enemy.CurrentPath.get(i);
-            float centerX = tile[0] * 64 + 32;
-            float centerY = tile[1] * 64 + 32;
-            sr.circle(centerX, centerY, 8);
-        }
-
-        sr.end();
-
-        // Draw lines connecting waypoints
-        sr.begin(ShapeRenderer.ShapeType.Line);
-        sr.setColor(Color.RED);
-        Gdx.gl.glLineWidth(3);
-
-        for (int i = 0; i < Enemy.CurrentPath.size() - 1; i++) {
-            int[] currentTile = Enemy.CurrentPath.get(i);
-            int[] nextTile = Enemy.CurrentPath.get(i + 1);
-
-            float x1 = currentTile[0] * 64 + 32;
-            float y1 = currentTile[1] * 64 + 32;
-            float x2 = nextTile[0] * 64 + 32;
-            float y2 = nextTile[1] * 64 + 32;
-
-            sr.line(x1, y1, x2, y2);
-
-            if (Enemy.getX() != x2){
-                Enemy.setX(Enemy.getX() + (Enemy.getSpeed() * Gdx.graphics.getDeltaTime()));
-            }
-        }
-
-        Gdx.gl.glLineWidth(1);
-        sr.end();
     }
 
     @Override

@@ -11,6 +11,7 @@ public class Enemy {
     int CurrentPathIndex = 0;
     boolean HasPath = false;
     DijkstrasPathfinding DijkstrasPathfinding;
+    float CurrentX, CurrentY, NextX, NextY;
 
     public Enemy(DijkstrasPathfinding DijkstrasPathfinding){
         this.DijkstrasPathfinding = DijkstrasPathfinding;
@@ -42,35 +43,28 @@ public class Enemy {
             return;
         }
 
-        int[] TargetTile = CurrentPath.get(CurrentPathIndex);
-        float TargetX = TargetTile[0] * 64 + 32;
-        float TargetY = TargetTile[1] * 64 + 32;
+        for (int i = 0; i < CurrentPath.size() - 1; i++){
+            int[] CurrentTile = CurrentPath.get(i);
+            int[] NextTile = CurrentPath.get(i + 1);
 
-        float ChangeInX = TargetX - x;
-        float ChangeInY = TargetY - y;
-        float Distance = (float)Math.sqrt(ChangeInX * ChangeInX + ChangeInY * ChangeInY);
-
-        float MoveSpeed = speed * Gdx.graphics.getDeltaTime();
-        float MoveX = (ChangeInX / Distance) * MoveSpeed;
-        float MoveY = (ChangeInY / Distance) * MoveSpeed;
-
-        x += MoveX;
-        y += MoveY;
-
-        /*if (Distance < 10) {
-            CurrentPathIndex++;
-            if (CurrentPathIndex >= CurrentPath.size()) {
-                HasPath = false;
-            }
+            CurrentX = CurrentTile[0] * 64 + 32;
+            CurrentY = CurrentTile[1] * 64 + 32;
+            NextX = NextTile[0] * 64 + 32;
+            NextY = NextTile[1] * 64 + 32;
         }
-        else {
-            float MoveSpeed = speed * Gdx.graphics.getDeltaTime();
-            float MoveX = (ChangeInX / Distance) * MoveSpeed;
-            float MoveY = (ChangeInY / Distance) * MoveSpeed;
 
-            x += MoveX;
-            y += MoveY;
-        }*/
+        if (CurrentX < NextX){
+            setX(getX() + getSpeed());
+        }
+        if (CurrentX > NextX){
+            setX(getX() - getSpeed());
+        }
+        if (CurrentY < NextY){
+            setY(getY() + getSpeed());
+        }
+        if (CurrentY > NextY) {
+            setY(getY() - getSpeed());
+        }
     }
 
     public float getX() {
@@ -106,7 +100,7 @@ public class Enemy {
     }
 
     public float getSpeed() {
-        return speed;
+        return speed * Gdx.graphics.getDeltaTime();
     }
 
     public void setSpeed(float speed) {

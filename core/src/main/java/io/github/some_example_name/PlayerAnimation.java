@@ -25,7 +25,7 @@ public class PlayerAnimation implements ApplicationListener {
     boolean IsKeyPressed, IsAttacking;
     TextureRegion CurrentFrame;
     TileMap TileMap;
-    private Player Player;
+    private final Player Player;
 
     public PlayerAnimation(Player Player){
         this.Player = Player;
