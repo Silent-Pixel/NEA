@@ -21,8 +21,8 @@ public class PlayerAnimation implements ApplicationListener {
 
     SpriteBatch batch;
 
-    float WalkTime, AttackTime, PlayerSpeed;
-    boolean IsKeyPressed, IsAttacking;
+    float IdleTime, WalkTime, AttackTime, Attack01CooldownTimer;
+    boolean IsMoveKeyPressed, IsAttacking, IsAttack01OnCooldown;
     TextureRegion CurrentFrame;
     TileMap TileMap;
     private final Player Player;
@@ -34,6 +34,7 @@ public class PlayerAnimation implements ApplicationListener {
     @Override
     public void create() {
         TileMap = new TileMap();
+        batch = new SpriteBatch();
 
         PlayerIdleTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Idle.png"));
         TextureRegion[][] PlayerIdleTextureRegion = TextureRegion.split(PlayerIdleTile, PlayerIdleTile.getWidth() / 6, PlayerIdleTile.getHeight());
@@ -45,6 +46,7 @@ public class PlayerAnimation implements ApplicationListener {
             }
         }
         PlayerIdleAnimation = new Animation<>(0.2f, IdleFrame);
+        IdleTime = 0f;
 
         PlayerWalkTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Walk.png"));
         TextureRegion[][] PlayerWalkTextureRegion = TextureRegion.split(PlayerWalkTile, PlayerWalkTile.getWidth() / 8, PlayerWalkTile.getHeight());
@@ -56,6 +58,7 @@ public class PlayerAnimation implements ApplicationListener {
             }
         }
         PlayerWalkAnimation = new Animation<>(0.08f, WalkFrame);
+        WalkTime = 0f;
 
         PlayerAttack01Tile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Attack01.png"));
         TextureRegion[][] PlayerAttack01TextureRegion = TextureRegion.split(PlayerAttack01Tile, PlayerAttack01Tile.getWidth() / 6, PlayerAttack01Tile.getHeight());
@@ -67,12 +70,9 @@ public class PlayerAnimation implements ApplicationListener {
             }
         }
         PlayerAttack01Animation = new Animation<>(0.1f, Attack01Frame);
-
-
-        batch = new SpriteBatch();
-        WalkTime = 0f;
         AttackTime = 0f;
         IsAttacking = false;
+        IsAttack01OnCooldown = false;
     }
 
     @Override
@@ -83,43 +83,28 @@ public class PlayerAnimation implements ApplicationListener {
     @Override
     public void render() {
 
-        Movement();
-        TestingClass();
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    public void Movement(){
+        IdleTime += Gdx.graphics.getDeltaTime();
         WalkTime += Gdx.graphics.getDeltaTime();
-        AttackTime += Gdx.graphics.getDeltaTime();
-        IsKeyPressed = false;
+        IsMoveKeyPressed = false;
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
             Player.setY(Player.getY() + Player.getSpeed());
-            IsKeyPressed = true;
+            IsMoveKeyPressed = true;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
             Player.setX(Player.getX() - Player.getSpeed());
-            IsKeyPressed = true;
+            IsMoveKeyPressed = true;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
             Player.setY(Player.getY() - Player.getSpeed());
-            IsKeyPressed = true;
+            IsMoveKeyPressed = true;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
             Player.setX(Player.getX() + Player.getSpeed());
-            IsKeyPressed = true;
+            IsMoveKeyPressed = true;
         }
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
@@ -127,7 +112,44 @@ public class PlayerAnimation implements ApplicationListener {
             AttackTime = 0f;
         }
 
-        if (IsKeyPressed){
+        if (IsAttack01OnCooldown){
+            Attack01CooldownTimer += Gdx.graphics.getDeltaTime();
+            if (Attack01CooldownTimer > 2f){
+                IsAttack01OnCooldown = false;
+                Attack01CooldownTimer = 0f;
+            }
+        }
+
+        if (IsAttack01OnCooldown){
+            CurrentFrame = PlayerIdleAnimation.getKeyFrame(IdleTime, true);
+        }
+
+        else if (IsAttacking){
+            AttackTime += Gdx.graphics.getDeltaTime();
+            CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
+            if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
+                IsAttack01OnCooldown = true;
+                AttackTime = 0f;
+            }
+        }
+
+        else if (IsMoveKeyPressed){
+            CurrentFrame = PlayerWalkAnimation.getKeyFrame(WalkTime, true);
+            AttackTime = 0f;
+        }
+
+        else{
+            CurrentFrame = PlayerIdleAnimation.getKeyFrame(IdleTime, true);
+            AttackTime = 0f;
+        }
+
+        batch.begin();
+        batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
+        batch.end();
+
+
+
+        /*if (IsKeyPressed){
             CurrentFrame = PlayerWalkAnimation.getKeyFrame(WalkTime, true);
         }
 
@@ -140,7 +162,7 @@ public class PlayerAnimation implements ApplicationListener {
         }
 
         else {
-            CurrentFrame = PlayerIdleAnimation.getKeyFrame(WalkTime, true);
+            CurrentFrame = PlayerIdleAnimation.getKeyFrame(IdleTime, true);
         }
 
         batch.begin();
@@ -150,7 +172,19 @@ public class PlayerAnimation implements ApplicationListener {
         else {
             batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
         }
-        batch.end();
+        batch.end(); */
+
+        TestingClass();
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
     }
 
     public void TestingClass(){
