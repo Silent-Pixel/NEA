@@ -2,11 +2,14 @@ package io.github.some_example_name;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
 
 public class EnemyAnimation implements ApplicationListener {
 
@@ -54,7 +57,7 @@ public class EnemyAnimation implements ApplicationListener {
         EnemyIdleAnimation = new Animation<>(0.2f, IdleFrame);
         IdleTime = 0f;
 
-        EnemyWalkTile = new Texture(Gdx.files.internal("assets/Enemy/Slime_jumpWalk_Angry.png"));
+        EnemyWalkTile = new Texture(Gdx.files.internal("assets/Enemy/Slime_JumpWalk_Angry.png"));
         TextureRegion[][] EnemyWalkTextureRegion = TextureRegion.split(EnemyWalkTile, EnemyWalkTile.getWidth() / 5, EnemyWalkTile.getHeight());
         TextureRegion[] WalkFrame = new TextureRegion[5];
         int WalkIndex = 0;
@@ -91,6 +94,16 @@ public class EnemyAnimation implements ApplicationListener {
         IdleTime += Gdx.graphics.getDeltaTime();
         WalkTime += Gdx.graphics.getDeltaTime();
 
+        Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.setColor(new Color(1, 1, 1, 0.1f));
+        sr.circle(Player.getX() + 33, Player.getY() + 35, 70);
+        sr.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
+
+        Circle PlayerCircle = new Circle(Player.getX() + 33, Player.getY() + 35, 70);
+
         if (IsAttackOnCooldown){
             Attack01CooldownTimer += Gdx.graphics.getDeltaTime();
             if (Attack01CooldownTimer > 1f){
@@ -103,7 +116,25 @@ public class EnemyAnimation implements ApplicationListener {
             CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime, true);
         }
 
-        else if (Enemy.getX() > Player.getX() - 50 && Enemy.getX() < Player.getX() + 50 && Enemy.getY() > Player.getY() - 50 && Enemy.getY() < Player.getY() + 50){
+        else if (PlayerCircle.contains(Enemy.getX() + 28, Enemy.getY() + 35)){
+            Attack01Time += Gdx.graphics.getDeltaTime();
+            CurrentFrame = EnemyAttackAnimation.getKeyFrame(Attack01Time, false);
+            if (EnemyAttackAnimation.isAnimationFinished(Attack01Time)){
+                IsAttackOnCooldown = true;
+                Attack01Time = 0f;
+            }
+        }
+
+        else if (!PlayerCircle.contains(Enemy.getX() + 28, Enemy.getY() + 35)){
+            Enemy.UpdatePath(TileMap.getCurrentLevel(), (int)Player.getX(), (int)Player.getY());
+            Enemy.FollowPath();
+            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
+            Attack01Time = 0f;
+        }
+
+
+
+        /*else if (Enemy.getX() > Player.getX() - 50 && Enemy.getX() < Player.getX() + 50 && Enemy.getY() > Player.getY() - 50 && Enemy.getY() < Player.getY() + 50){
             Attack01Time += Gdx.graphics.getDeltaTime();
             CurrentFrame = EnemyAttackAnimation.getKeyFrame(Attack01Time, false);
             if (EnemyAttackAnimation.isAnimationFinished(Attack01Time)){
@@ -117,7 +148,7 @@ public class EnemyAnimation implements ApplicationListener {
             Enemy.FollowPath();
             CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
             Attack01Time = 0f;
-        }
+        }*/
 
         else{
             CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime, true);

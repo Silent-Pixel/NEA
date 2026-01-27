@@ -56,13 +56,13 @@ public class Enemy {
         if (CurrentX < NextX){
             setX(getX() + getSpeed());
         }
-        if (CurrentX > NextX){
+        else if (CurrentX > NextX){
             setX(getX() - getSpeed());
         }
-        if (CurrentY < NextY){
+        else if (CurrentY < NextY){
             setY(getY() + getSpeed());
         }
-        if (CurrentY > NextY) {
+        else {
             setY(getY() - getSpeed());
         }
     }
