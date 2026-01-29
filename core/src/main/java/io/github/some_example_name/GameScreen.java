@@ -18,15 +18,15 @@ public class GameScreen implements Screen {
     ShapeRenderer sr = new ShapeRenderer();
 
     Player Player = new Player();
-    TileMap TileMap = new TileMap();
+    LevelSystem LevelSystem = new LevelSystem();
     PlayerAnimation PlayerAnimation = new PlayerAnimation(Player);
-    EnemyAnimation EnemyAnimation = new EnemyAnimation(Player, TileMap);
+    EnemyAnimation EnemyAnimation = new EnemyAnimation(Player, LevelSystem);
 
     @Override
     public void show() {
 
         if (!IsInitialised){
-            TileMap.create();
+            LevelSystem.create();
             PlayerAnimation.create();
             EnemyAnimation.create();
             IsInitialised = true;
@@ -35,7 +35,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        TileMap.render();
+        LevelSystem.render();
         PlayerAnimation.render();
         EnemyAnimation.render();
         GoToMainMenuOnEsc();
@@ -66,7 +66,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         sr.dispose();
-        TileMap.dispose();
+        LevelSystem.dispose();
         PlayerAnimation.dispose();
         EnemyAnimation.dispose();
     }

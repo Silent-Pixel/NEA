@@ -30,18 +30,18 @@ public class EnemyAnimation implements ApplicationListener {
     boolean IsAttackOnCooldown;
 
     private final Player Player;
-    private final TileMap TileMap;
+    private final LevelSystem LevelSystem;
 
-    public EnemyAnimation(Player Player, TileMap TileMap){
+    public EnemyAnimation(Player Player, LevelSystem LevelSystem){
         this.Player = Player;
-        this.TileMap = TileMap;
+        this.LevelSystem = LevelSystem;
     }
 
     @Override
     public void create() {
         sr = new ShapeRenderer();
         batch = new SpriteBatch();
-        int[][] CurrentMap = TileMap.getCurrentLevel();
+        int[][] CurrentMap = LevelSystem.getCurrentLevel();
         DijkstrasPathfinding dijkstrasPathfinding = new DijkstrasPathfinding(CurrentMap);
         Enemy = new Enemy(dijkstrasPathfinding);
 
@@ -126,7 +126,7 @@ public class EnemyAnimation implements ApplicationListener {
         }
 
         else if (!PlayerCircle.contains(Enemy.getX() + 28, Enemy.getY() + 35)){
-            Enemy.UpdatePath(TileMap.getCurrentLevel(), (int)Player.getX(), (int)Player.getY());
+            Enemy.UpdatePath(LevelSystem.getCurrentLevel(), (int)Player.getX(), (int)Player.getY());
             Enemy.FollowPath();
             CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
             Attack01Time = 0f;

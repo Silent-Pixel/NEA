@@ -24,7 +24,7 @@ public class PlayerAnimation implements ApplicationListener {
     float IdleTime, WalkTime, AttackTime, Attack01CooldownTimer;
     boolean IsMoveKeyPressed, IsAttacking, IsAttack01OnCooldown;
     TextureRegion CurrentFrame;
-    TileMap TileMap;
+    LevelSystem LevelSystem;
     private final Player Player;
 
     public PlayerAnimation(Player Player){
@@ -33,7 +33,7 @@ public class PlayerAnimation implements ApplicationListener {
 
     @Override
     public void create() {
-        TileMap = new TileMap();
+        LevelSystem = new LevelSystem();
         batch = new SpriteBatch();
 
         PlayerIdleTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Idle.png"));
@@ -173,8 +173,6 @@ public class PlayerAnimation implements ApplicationListener {
             batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
         }
         batch.end(); */
-
-        TestingClass();
     }
 
     @Override
@@ -185,18 +183,6 @@ public class PlayerAnimation implements ApplicationListener {
     @Override
     public void resume() {
 
-    }
-
-    public void TestingClass(){
-        if (Player.getY() + 77 > Gdx.graphics.getHeight()) {
-            TileMap.TestingClassUp();
-            Player.setY(100);
-        }
-
-        else if (Player.getY() < 0){
-            TileMap.TestingClassDown();
-            Player.setY(900);
-        }
     }
 
     @Override
