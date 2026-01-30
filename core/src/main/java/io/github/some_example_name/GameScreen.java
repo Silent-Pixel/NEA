@@ -18,7 +18,7 @@ public class GameScreen implements Screen {
     ShapeRenderer sr = new ShapeRenderer();
 
     Player Player = new Player();
-    LevelSystem LevelSystem = new LevelSystem();
+    LevelSystem LevelSystem = new LevelSystem(Player);
     PlayerAnimation PlayerAnimation = new PlayerAnimation(Player);
     EnemyAnimation EnemyAnimation = new EnemyAnimation(Player, LevelSystem);
 
@@ -39,6 +39,7 @@ public class GameScreen implements Screen {
         PlayerAnimation.render();
         EnemyAnimation.render();
         GoToMainMenuOnEsc();
+        LevelSystem.LevelTransition();
     }
 
     public void GoToMainMenuOnEsc() {

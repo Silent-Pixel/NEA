@@ -24,7 +24,6 @@ public class PlayerAnimation implements ApplicationListener {
     float IdleTime, WalkTime, AttackTime, Attack01CooldownTimer;
     boolean IsMoveKeyPressed, IsAttacking, IsAttack01OnCooldown;
     TextureRegion CurrentFrame;
-    LevelSystem LevelSystem;
     private final Player Player;
 
     public PlayerAnimation(Player Player){
@@ -33,7 +32,6 @@ public class PlayerAnimation implements ApplicationListener {
 
     @Override
     public void create() {
-        LevelSystem = new LevelSystem();
         batch = new SpriteBatch();
 
         PlayerIdleTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Idle.png"));

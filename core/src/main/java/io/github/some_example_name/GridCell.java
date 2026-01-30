@@ -8,7 +8,7 @@ public class GridCell {
         this.gridX = gridX;
         this.gridY = gridY;
         this.LevelIndex = levelIndex;
-        this.LevelData = LevelData;
+        this.LevelData = level2DArray;
     }
 
     public int getGridX() {
@@ -40,7 +40,7 @@ public class GridCell {
     }
 
     public void setLevelData(int[][] LevelData) {
-        LevelData = LevelData;
+        this.LevelData = LevelData;
     }
 
     public boolean DoCordsMatch(int x, int y){

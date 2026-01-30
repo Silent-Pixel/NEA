@@ -20,6 +20,11 @@ public class LevelSystem extends ApplicationAdapter {
     ArrayList<int[][]> AllLevels;
     LevelGrid LevelGrid;
     GridCell GridCell;
+    private final Player Player;
+
+    public LevelSystem(Player Player){
+        this.Player = Player;
+    }
 
     @Override
     public void create() {
@@ -72,24 +77,26 @@ public class LevelSystem extends ApplicationAdapter {
         return Levels;
     }
 
-    public boolean LevelTransition(float PlayerX, float PlayerY){
-        if (PlayerY > 1080 - 200){
+    public void LevelTransition(){
+        if (Player.getY() > 1080 - 200){
             LevelChange(0, 1);
-            return true;
+            Player.setY(400);
+            return;
         }
-        if (PlayerY < 200){
+        if (Player.getY() < 200){
             LevelChange(0, -1);
-            return true;
+            Player.setY(680);
+            return;
         }
-        if (PlayerX > 1920 - 200){
+        if (Player.getX() > 1920 - 200){
             LevelChange(1, 0);
-            return true;
+            Player.setX(400);
+            return;
         }
-        if (PlayerX < 200){
+        if (Player.getX() < 200){
             LevelChange(-1, 0);
-            return true;
+            Player.setX(1520);
         }
-        return false;
     }
 
     public void LevelChange(int ChangeX, int ChangeY){
