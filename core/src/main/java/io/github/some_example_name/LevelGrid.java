@@ -7,9 +7,9 @@ public class LevelGrid {
     ArrayList<int[][]> AllLevels;
     int NextLevelIndex;
 
-    public LevelGrid(ArrayList<int[][]> allLevels) {
+    public LevelGrid(ArrayList<int[][]> AllLevels) {
         this.Cells = new ArrayList<>();
-        this.AllLevels = allLevels;
+        this.AllLevels = AllLevels;
         this.NextLevelIndex = 0;
 
         if (!AllLevels.isEmpty()){
@@ -20,9 +20,10 @@ public class LevelGrid {
     }
 
     public GridCell FindCell(int gridX, int gridY){
-        for (GridCell Cell: Cells){
-            if (Cell.DoCordsMatch(gridX, gridY)){
-                return Cell;
+        for (int i = 0; i < Cells.size(); i++){
+            GridCell cell = Cells.get(i);
+            if (cell.DoCordsMatch(gridX, gridY)){
+                return cell;
             }
         }
         return null;
@@ -52,6 +53,10 @@ public class LevelGrid {
     }
 
     public boolean HasCells(int gridX, int gridY){
-        return FindCell(gridX, gridY) != null;
+        GridCell cell = FindCell(gridX, gridY);
+        if (cell != null){
+            return true;
+        }
+        return false;
     }
 }

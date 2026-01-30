@@ -2,13 +2,13 @@ package io.github.some_example_name;
 
 public class GridCell {
     int gridX, gridY, LevelIndex;
-    int[][] Level2DArray;
+    int[][] LevelData;
 
     public GridCell(int gridX, int gridY, int levelIndex, int[][] level2DArray) {
         this.gridX = gridX;
         this.gridY = gridY;
-        LevelIndex = levelIndex;
-        Level2DArray = level2DArray;
+        this.LevelIndex = levelIndex;
+        this.LevelData = LevelData;
     }
 
     public int getGridX() {
@@ -35,16 +35,19 @@ public class GridCell {
         LevelIndex = levelIndex;
     }
 
-    public int[][] getLevel2DArray() {
-        return Level2DArray;
+    public int[][] getLevelData() {
+        return LevelData;
     }
 
-    public void setLevel2DArray(int[][] level2DArray) {
-        Level2DArray = level2DArray;
+    public void setLevelData(int[][] LevelData) {
+        LevelData = LevelData;
     }
 
     public boolean DoCordsMatch(int x, int y){
-        return this.gridX == x && this.gridY == y;
+        if (this.gridX == x && this.gridY == y){
+            return true;
+        }
+        return false;
     }
 
     @Override

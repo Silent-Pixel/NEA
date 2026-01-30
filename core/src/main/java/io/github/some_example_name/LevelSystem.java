@@ -32,7 +32,7 @@ public class LevelSystem extends ApplicationAdapter {
         LevelGrid = new LevelGrid(AllLevels);
         GridCell = LevelGrid.FindCell(0, 0);
         if (GridCell != null){
-            CurrentLevel = GridCell.getLevel2DArray();
+            CurrentLevel = GridCell.getLevelData();
         }
     }
 
@@ -47,7 +47,6 @@ public class LevelSystem extends ApplicationAdapter {
                     if (line.isEmpty()){
                         break;
                     }
-
                     String[] tokens = line.split("\\s+");
                     int[] row = new int[tokens.length];
                     for (int i = 0; i < tokens.length; i++){
@@ -73,14 +72,55 @@ public class LevelSystem extends ApplicationAdapter {
         return Levels;
     }
 
-    public void SetLevel(int LevelIndex){
-        if (LevelIndex >= 0 && LevelIndex < AllLevels.size()){
-            CurrentLevel = AllLevels.get(LevelIndex);
-            System.out.println("Switched to level " + LevelIndex);
+    public boolean LevelTransition(float PlayerX, float PlayerY){
+        if (PlayerY > 1080 - 200){
+            LevelChange(0, 1);
+            return true;
         }
-        else {
-            System.err.println("Invalid Level index: " + LevelIndex);
+        if (PlayerY < 200){
+            LevelChange(0, -1);
+            return true;
         }
+        if (PlayerX > 1920 - 200){
+            LevelChange(1, 0);
+            return true;
+        }
+        if (PlayerX < 200){
+            LevelChange(-1, 0);
+            return true;
+        }
+        return false;
+    }
+
+    public void LevelChange(int ChangeX, int ChangeY){
+        int NewX = GridCell.getGridX() + ChangeX;
+        int NewY = GridCell.getGridY() + ChangeY;
+        GridCell NewCell = LevelGrid.GetOrMakeCell(NewX, NewY);
+        GridCell = NewCell;
+        CurrentLevel = GridCell.getLevelData();
+        System.out.println("Player now at grid (" + GridCell.getGridX() + ", " + GridCell.getGridY() + ")");
+    }
+
+    public int getCurrentGridX(){
+        if (GridCell != null){
+            return GridCell.getGridX();
+        }
+        return 0;
+    }
+
+    public int getCurrentGridY(){
+        if (GridCell != null){
+            return GridCell.getGridY();
+        }
+        return 0;
+    }
+
+    public GridCell getCurrentCell(){
+        return GridCell;
+    }
+
+    public LevelGrid getLevelGrid(){
+        return LevelGrid;
     }
 
     @Override
