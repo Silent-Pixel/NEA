@@ -132,24 +132,6 @@ public class EnemyAnimation implements ApplicationListener {
             Attack01Time = 0f;
         }
 
-
-
-        /*else if (Enemy.getX() > Player.getX() - 50 && Enemy.getX() < Player.getX() + 50 && Enemy.getY() > Player.getY() - 50 && Enemy.getY() < Player.getY() + 50){
-            Attack01Time += Gdx.graphics.getDeltaTime();
-            CurrentFrame = EnemyAttackAnimation.getKeyFrame(Attack01Time, false);
-            if (EnemyAttackAnimation.isAnimationFinished(Attack01Time)){
-                IsAttackOnCooldown = true;
-                Attack01Time = 0f;
-            }
-        }
-
-        else if (Player.getX() != Enemy.getX() && Player.getY() != Enemy.getY()){
-            Enemy.UpdatePath(TileMap.getCurrentLevel(), (int)Player.getX(), (int)Player.getY());
-            Enemy.FollowPath();
-            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
-            Attack01Time = 0f;
-        }*/
-
         else{
             CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime, true);
             Attack01Time = 0f;
@@ -158,43 +140,6 @@ public class EnemyAnimation implements ApplicationListener {
         batch.begin();
         batch.draw(CurrentFrame, Enemy.getX(), Enemy.getY(), 2 * 32, 2 * 32);
         batch.end();
-
-
-
-
-        /*IdleTime += Gdx.graphics.getDeltaTime();
-        WalkTime += Gdx.graphics.getDeltaTime();
-        Attack01Time += Gdx.graphics.getDeltaTime();
-        InAttackRange = false;
-
-
-
-        if (Enemy.getX() > Player.getX() - 50 && Enemy.getX() < Player.getX() + 50 && Enemy.getY() > Player.getY() - 50 && Enemy.getY() < Player.getY() + 50){
-            InAttackRange = true;
-        }
-
-
-
-        if (InAttackRange){
-            CurrentFrame = EnemyAttackAnimation.getKeyFrame(Attack01Time, true);
-
-            if (EnemyAttackAnimation.isAnimationFinished(Attack01Time)){
-                InAttackRange = false;
-            }
-        }
-        else if (Player.getX() != Enemy.getX() && Player.getY() != Enemy.getY()) {
-            Enemy.UpdatePath(TileMap.getCurrentLevel(), (int)Player.getX(), (int)Player.getY());
-            Enemy.FollowPath();
-            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime, true);
-        }
-
-        else {
-            CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime, true);
-        }
-
-        batch.begin();
-        batch.draw(CurrentFrame, Enemy.getX(), Enemy.getY(), 2 * 32, 2 * 32);
-        batch.end(); */
     }
 
     @Override
@@ -212,5 +157,6 @@ public class EnemyAnimation implements ApplicationListener {
         batch.dispose();
         EnemyIdleTile.dispose();
         EnemyWalkTile.dispose();
+        EnemyAttackTile.dispose();
     }
 }

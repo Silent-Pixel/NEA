@@ -19,9 +19,12 @@ public class PlayerAnimation implements ApplicationListener {
     Animation<TextureRegion> PlayerAttack01Animation;
     Texture PlayerAttack01Tile;
 
+    Animation<TextureRegion> PlayerDamageAnimation;
+    Texture PlayerDamageTile;
+
     SpriteBatch batch;
 
-    float IdleTime, WalkTime, AttackTime, Attack01CooldownTimer;
+    float IdleTime, WalkTime, AttackTime, Attack01CooldownTimer, DamageTime;
     boolean IsMoveKeyPressed, IsAttacking, IsAttack01OnCooldown;
     TextureRegion CurrentFrame;
     private final Player Player;
@@ -67,7 +70,19 @@ public class PlayerAnimation implements ApplicationListener {
                 Attack01Frame[Attack01Index++] = PlayerAttack01TextureRegion[i][j];
             }
         }
+
+        PlayerDamageTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Hurt.png"));
+        TextureRegion[][] PlayerDamageTextureRegion = TextureRegion.split(PlayerDamageTile, PlayerDamageTile.getWidth() / 4, PlayerDamageTile.getHeight());
+        TextureRegion[] DamageFrame = new TextureRegion[4];
+        int DamageIndex = 0;
+        for (int i = 0; i < 1; i++){
+            for (int j = 0; j < 4; j++){
+                DamageFrame[DamageIndex++] = PlayerDamageTextureRegion[i][j];
+            }
+        }
         PlayerAttack01Animation = new Animation<>(0.1f, Attack01Frame);
+        DamageTime = 0f;
+
         AttackTime = 0f;
         IsAttacking = false;
         IsAttack01OnCooldown = false;
@@ -144,33 +159,6 @@ public class PlayerAnimation implements ApplicationListener {
         batch.begin();
         batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
         batch.end();
-
-
-
-        /*if (IsKeyPressed){
-            CurrentFrame = PlayerWalkAnimation.getKeyFrame(WalkTime, true);
-        }
-
-        else if (IsAttacking){
-            CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, true);
-
-            if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
-                IsAttacking = false;
-            }
-        }
-
-        else {
-            CurrentFrame = PlayerIdleAnimation.getKeyFrame(IdleTime, true);
-        }
-
-        batch.begin();
-        if (IsAttacking && !IsKeyPressed){
-            batch.draw(CurrentFrame, Player.getX() - 25, Player.getY(), (float) (3.5 * 34), (float) (3.5 * 27));
-        }
-        else {
-            batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
-        }
-        batch.end(); */
     }
 
     @Override
@@ -188,6 +176,8 @@ public class PlayerAnimation implements ApplicationListener {
         batch.dispose();
         PlayerIdleTile.dispose();
         PlayerWalkTile.dispose();
+        PlayerAttack01Tile.dispose();
+        PlayerDamageTile.dispose();
     }
 
 
