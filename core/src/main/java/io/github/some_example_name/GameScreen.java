@@ -1,26 +1,30 @@
 package io.github.some_example_name;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-public class GameScreen implements Screen {
+public class GameScreen extends Game implements Screen {
 
-    public GameScreen(Main game){
-        this.main = game;
+    public GameScreen(MainMenuScreen game, PlayerDeathScreen game1){
+        this.mainMenuScreen = game;
+        this.playerDeathScreen = game1;
     }
 
-    private Main main;
+    private final MainMenuScreen mainMenuScreen;
+    private final PlayerDeathScreen playerDeathScreen;
 
-    private static boolean IsInitialised = false;
+    private boolean IsInitialised = false;
 
-    ShapeRenderer sr = new ShapeRenderer();
-
-    Player Player = new Player();
+    Player Player = new Player(800, 250);
+    Enemy[] Enemies = {
+        new Enemy(500, 500),
+        new Enemy(700, 500)
+    };
     LevelSystem LevelSystem = new LevelSystem(Player);
-    PlayerAnimation PlayerAnimation = new PlayerAnimation(Player);
-    EnemyAnimation EnemyAnimation = new EnemyAnimation(Player, LevelSystem);
+    PlayerAnimation PlayerAnimation = new PlayerAnimation(Player, Enemies);
+    EnemyAnimation EnemyAnimation = new EnemyAnimation(Player, LevelSystem, PlayerAnimation, Enemies);
 
     @Override
     public void show() {
@@ -36,16 +40,26 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         LevelSystem.render();
-        PlayerAnimation.render();
+        if (Player.getHealth() <= 0){
+            mainMenuScreen.setScreen(new PlayerDeathScreen(mainMenuScreen, this, Player));
+        }
+        else {
+            PlayerAnimation.render();
+        }
         EnemyAnimation.render();
         GoToMainMenuOnEsc();
-        LevelSystem.LevelTransition();
+        LevelSystem.LevelBoundaries();
     }
 
     public void GoToMainMenuOnEsc() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            main.setScreen(new MainMenuScreen());
+            mainMenuScreen.setScreen(mainMenuScreen);
         }
+    }
+
+    @Override
+    public void create() {
+
     }
 
     @Override
@@ -62,13 +76,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
     public void dispose() {
-        sr.dispose();
-        LevelSystem.dispose();
-        PlayerAnimation.dispose();
-        EnemyAnimation.dispose();
     }
 }

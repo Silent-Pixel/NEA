@@ -1,36 +1,37 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
-
 import java.util.ArrayList;
 
 public class Enemy {
 
-    float x = 500, y = 500, w, h, speed = 150, health;
+    float x, y, speed = 150, health = 100, CurrentX, CurrentY, NextX, NextY;
     ArrayList<int[]> CurrentPath = new ArrayList<>();
-    int CurrentPathIndex = 0;
     boolean HasPath = false;
-    DijkstrasPathfinding DijkstrasPathfinding;
-    float CurrentX, CurrentY, NextX, NextY;
+    public DijkstraPathfinding DijkstraPathfinding;
 
-    public Enemy(DijkstrasPathfinding DijkstrasPathfinding){
-        this.DijkstrasPathfinding = DijkstrasPathfinding;
+    public Enemy(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public Enemy(DijkstraPathfinding DijkstraPathfinding){
+        this.DijkstraPathfinding = DijkstraPathfinding;
     }
 
     public void UpdatePath(int[][] map, int PlayerX, int PlayerY){
-        DijkstrasPathfinding.map = map;
+        DijkstraPathfinding.map = map;
 
-        int EnemyTileX = (int)(x / 64);
-        int EnemyTileY = (int)(y / 64);
+        int EnemyTileX = (int)((x + 32) / 64);
+        int EnemyTileY = (int)((y + 32) / 64);
 
         int PlayerTileX = (PlayerX / 64);
         int PlayerTileY = (PlayerY / 64);
 
         if (EnemyTileX != PlayerTileX && EnemyTileY != PlayerTileY){
-            CurrentPath = DijkstrasPathfinding.FindPath(EnemyTileX, EnemyTileY, PlayerTileX, PlayerTileY);
+            CurrentPath = DijkstraPathfinding.FindPath(EnemyTileX, EnemyTileY, PlayerTileX, PlayerTileY);
             if (!CurrentPath.isEmpty()){
                 HasPath = true;
-                CurrentPathIndex = 0;
             }
             else {
                 HasPath = false;
@@ -39,7 +40,7 @@ public class Enemy {
     }
 
     public void FollowPath(){
-        if (!HasPath || CurrentPath.isEmpty() || CurrentPathIndex >= CurrentPath.size()){
+        if (!HasPath || CurrentPath.isEmpty()){
             return;
         }
 
@@ -83,22 +84,6 @@ public class Enemy {
         this.y = y;
     }
 
-    public float getW() {
-        return w;
-    }
-
-    public void setW(float w) {
-        this.w = w;
-    }
-
-    public float getH() {
-        return h;
-    }
-
-    public void setH(float h) {
-        this.h = h;
-    }
-
     public float getSpeed() {
         return speed * Gdx.graphics.getDeltaTime();
     }
@@ -112,6 +97,10 @@ public class Enemy {
     }
 
     public void setHealth(float health) {
-        this.health = 100;
+        this.health = health;
+    }
+
+    public ArrayList<int[]> getCurrentPath() {
+        return CurrentPath;
     }
 }

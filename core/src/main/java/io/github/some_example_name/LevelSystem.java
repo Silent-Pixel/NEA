@@ -31,9 +31,11 @@ public class LevelSystem extends ApplicationAdapter {
         batch = new SpriteBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920, 1080);
-        tileset = new Texture(Gdx.files.internal("assets/AssetsForMaps.png"));
+
+        tileset = new Texture(Gdx.files.internal("Map/AssetsForMaps.png"));
         tiles = TextureRegion.split(tileset, 32, 32);
-        AllLevels = ReadInLevelsFromFile("assets/Level2DArrays.txt");
+
+        AllLevels = ReadInLevelsFromFile("Map/Level2DArrays.txt");
         LevelGrid = new LevelGrid(AllLevels);
         GridCell = LevelGrid.FindCell(0, 0);
         if (GridCell != null){
@@ -77,7 +79,7 @@ public class LevelSystem extends ApplicationAdapter {
         return Levels;
     }
 
-    public void LevelTransition(){
+    public void LevelBoundaries(){
         if (Player.getY() > 1080 - 200){
             LevelChange(0, 1);
             Player.setY(400);
@@ -102,32 +104,9 @@ public class LevelSystem extends ApplicationAdapter {
     public void LevelChange(int ChangeX, int ChangeY){
         int NewX = GridCell.getGridX() + ChangeX;
         int NewY = GridCell.getGridY() + ChangeY;
-        GridCell NewCell = LevelGrid.GetOrMakeCell(NewX, NewY);
-        GridCell = NewCell;
+        GridCell = LevelGrid.GetOrMakeCell(NewX, NewY);
         CurrentLevel = GridCell.getLevelData();
         System.out.println("Player now at grid (" + GridCell.getGridX() + ", " + GridCell.getGridY() + ")");
-    }
-
-    public int getCurrentGridX(){
-        if (GridCell != null){
-            return GridCell.getGridX();
-        }
-        return 0;
-    }
-
-    public int getCurrentGridY(){
-        if (GridCell != null){
-            return GridCell.getGridY();
-        }
-        return 0;
-    }
-
-    public GridCell getCurrentCell(){
-        return GridCell;
-    }
-
-    public LevelGrid getLevelGrid(){
-        return LevelGrid;
     }
 
     @Override
@@ -158,7 +137,5 @@ public class LevelSystem extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-        batch.dispose();
-        tileset.dispose();
     }
 }

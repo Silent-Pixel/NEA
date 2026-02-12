@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.Objects;
+
 public class PlayerAnimation implements ApplicationListener {
 
     Animation<TextureRegion> PlayerIdleAnimation;
@@ -25,19 +27,27 @@ public class PlayerAnimation implements ApplicationListener {
     SpriteBatch batch;
 
     float IdleTime, WalkTime, AttackTime, Attack01CooldownTimer, DamageTime;
-    boolean IsMoveKeyPressed, IsAttacking, IsAttack01OnCooldown;
+    boolean IsMoveKeyPressed, IsAttacking, IsAttack01OnCooldown, IsDamageTaken;
     TextureRegion CurrentFrame;
     private final Player Player;
+    String LastDirection;
+    Enemy[] Enemies;
 
-    public PlayerAnimation(Player Player){
+    public PlayerAnimation(Player Player, Enemy[] Enemies){
         this.Player = Player;
+        this.Enemies = Enemies;
+    }
+
+    public void setIsDamageTaken(boolean IsDamageTaken) {
+        this.IsDamageTaken = IsDamageTaken;
     }
 
     @Override
     public void create() {
         batch = new SpriteBatch();
+        LastDirection = "Right";
 
-        PlayerIdleTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Idle.png"));
+        PlayerIdleTile = new Texture(Gdx.files.internal("Soldier/Soldier-Idle.png"));
         TextureRegion[][] PlayerIdleTextureRegion = TextureRegion.split(PlayerIdleTile, PlayerIdleTile.getWidth() / 6, PlayerIdleTile.getHeight());
         TextureRegion[] IdleFrame = new TextureRegion[6];
         int IdleIndex = 0;
@@ -49,7 +59,7 @@ public class PlayerAnimation implements ApplicationListener {
         PlayerIdleAnimation = new Animation<>(0.2f, IdleFrame);
         IdleTime = 0f;
 
-        PlayerWalkTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Walk.png"));
+        PlayerWalkTile = new Texture(Gdx.files.internal("Soldier/Soldier-Walk.png"));
         TextureRegion[][] PlayerWalkTextureRegion = TextureRegion.split(PlayerWalkTile, PlayerWalkTile.getWidth() / 8, PlayerWalkTile.getHeight());
         TextureRegion[] WalkFrame = new TextureRegion[8];
         int WalkIndex = 0;
@@ -61,7 +71,7 @@ public class PlayerAnimation implements ApplicationListener {
         PlayerWalkAnimation = new Animation<>(0.08f, WalkFrame);
         WalkTime = 0f;
 
-        PlayerAttack01Tile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Attack01.png"));
+        PlayerAttack01Tile = new Texture(Gdx.files.internal("Soldier/Soldier-Attack01.png"));
         TextureRegion[][] PlayerAttack01TextureRegion = TextureRegion.split(PlayerAttack01Tile, PlayerAttack01Tile.getWidth() / 6, PlayerAttack01Tile.getHeight());
         TextureRegion[] Attack01Frame = new TextureRegion[6];
         int Attack01Index = 0;
@@ -70,8 +80,9 @@ public class PlayerAnimation implements ApplicationListener {
                 Attack01Frame[Attack01Index++] = PlayerAttack01TextureRegion[i][j];
             }
         }
+        PlayerAttack01Animation = new Animation<>(0.1f, Attack01Frame);
 
-        PlayerDamageTile = new Texture(Gdx.files.internal("assets/Soldier/Soldier-Hurt.png"));
+        PlayerDamageTile = new Texture(Gdx.files.internal("Soldier/Soldier-Hurt.png"));
         TextureRegion[][] PlayerDamageTextureRegion = TextureRegion.split(PlayerDamageTile, PlayerDamageTile.getWidth() / 4, PlayerDamageTile.getHeight());
         TextureRegion[] DamageFrame = new TextureRegion[4];
         int DamageIndex = 0;
@@ -80,10 +91,9 @@ public class PlayerAnimation implements ApplicationListener {
                 DamageFrame[DamageIndex++] = PlayerDamageTextureRegion[i][j];
             }
         }
-        PlayerAttack01Animation = new Animation<>(0.1f, Attack01Frame);
+        PlayerDamageAnimation = new Animation<>(0.1f, DamageFrame);
         DamageTime = 0f;
 
-        AttackTime = 0f;
         IsAttacking = false;
         IsAttack01OnCooldown = false;
     }
@@ -106,6 +116,7 @@ public class PlayerAnimation implements ApplicationListener {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
+            LastDirection = "Left";
             Player.setX(Player.getX() - Player.getSpeed());
             IsMoveKeyPressed = true;
         }
@@ -116,6 +127,7 @@ public class PlayerAnimation implements ApplicationListener {
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
+            LastDirection = "Right";
             Player.setX(Player.getX() + Player.getSpeed());
             IsMoveKeyPressed = true;
         }
@@ -141,8 +153,10 @@ public class PlayerAnimation implements ApplicationListener {
             AttackTime += Gdx.graphics.getDeltaTime();
             CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
             if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
+                IsAttacking = false;
                 IsAttack01OnCooldown = true;
                 AttackTime = 0f;
+
             }
         }
 
@@ -151,13 +165,37 @@ public class PlayerAnimation implements ApplicationListener {
             AttackTime = 0f;
         }
 
+        else if (IsDamageTaken){
+            DamageTime += Gdx.graphics.getDeltaTime();
+            CurrentFrame = PlayerDamageAnimation.getKeyFrame(DamageTime, false);
+            if (PlayerDamageAnimation.isAnimationFinished(DamageTime)){
+                IsDamageTaken = false;
+                DamageTime = 0f;
+            }
+        }
+
         else{
             CurrentFrame = PlayerIdleAnimation.getKeyFrame(IdleTime, true);
             AttackTime = 0f;
         }
 
         batch.begin();
-        batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
+        if (Objects.equals(LastDirection, "Right")){
+            if (IsAttacking && !IsAttack01OnCooldown){
+                batch.draw(CurrentFrame, Player.getX() - 25, Player.getY(), (float) (3.5 * 34), (float) (3.5 * 27));
+            }
+            else{
+                batch.draw(CurrentFrame, Player.getX(), Player.getY(), (float) (3.5 * 17), (float) (3.5 * 22));
+            }
+        }
+        if (Objects.equals(LastDirection, "Left")) {
+            if (IsAttacking && !IsAttack01OnCooldown){
+                batch.draw(CurrentFrame, Player.getX() + 90, Player.getY(), (float) -(3.5 * 34), (float) (3.5 * 27));
+            }
+            else {
+                batch.draw(CurrentFrame, Player.getX() + 67, Player.getY(), (float) -(3.5 * 17), (float) (3.5 * 22));
+            }
+        }
         batch.end();
     }
 
@@ -173,11 +211,7 @@ public class PlayerAnimation implements ApplicationListener {
 
     @Override
     public void dispose() {
-        batch.dispose();
-        PlayerIdleTile.dispose();
-        PlayerWalkTile.dispose();
-        PlayerAttack01Tile.dispose();
-        PlayerDamageTile.dispose();
+
     }
 
 

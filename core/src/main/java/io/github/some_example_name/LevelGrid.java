@@ -1,6 +1,7 @@
 package io.github.some_example_name;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class LevelGrid {
     ArrayList<GridCell> Cells;
@@ -20,9 +21,8 @@ public class LevelGrid {
     }
 
     public GridCell FindCell(int gridX, int gridY){
-        for (int i = 0; i < Cells.size(); i++){
-            GridCell cell = Cells.get(i);
-            if (cell.DoCordsMatch(gridX, gridY)){
+        for (GridCell cell : Cells) {
+            if (cell.DoCordsMatch(gridX, gridY)) {
                 return cell;
             }
         }
@@ -35,7 +35,7 @@ public class LevelGrid {
             System.out.println("Loaded existing" + ExistingCells);
             return ExistingCells;
         }
-        int LevelIndex = NextLevelIndex % AllLevels.size();
+        int LevelIndex = new Random().nextInt(AllLevels.size());
         int[][] LevelData = AllLevels.get(LevelIndex);
         GridCell NewCell = new GridCell(gridX, gridY, LevelIndex, LevelData);
         Cells.add(NewCell);
