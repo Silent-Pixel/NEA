@@ -1,9 +1,14 @@
-package io.github.some_example_name;
+package io.github.some_example_name.Screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import io.github.some_example_name.Characters.Enemy;
+import io.github.some_example_name.Characters.EnemyAnimation;
+import io.github.some_example_name.Characters.Player;
+import io.github.some_example_name.Characters.PlayerAnimation;
+import io.github.some_example_name.Levels.LevelSystem;
 
 public class GameScreen extends Game implements Screen {
 
@@ -30,6 +35,7 @@ public class GameScreen extends Game implements Screen {
     public void show() {
 
         if (!IsInitialised){
+            PlayerAnimation.setEnemyAnimation(EnemyAnimation);
             LevelSystem.create();
             PlayerAnimation.create();
             EnemyAnimation.create();

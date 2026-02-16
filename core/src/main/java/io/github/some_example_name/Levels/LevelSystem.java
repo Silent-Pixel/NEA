@@ -1,4 +1,4 @@
-package io.github.some_example_name;
+package io.github.some_example_name.Levels;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import io.github.some_example_name.Characters.Player;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -80,24 +82,25 @@ public class LevelSystem extends ApplicationAdapter {
     }
 
     public void LevelBoundaries(){
-        if (Player.getY() > 1080 - 200){
+        if (Player.getY() + 35 > 1080 - 50){
             LevelChange(0, 1);
-            Player.setY(400);
+            Player.setY(200);
             return;
         }
-        if (Player.getY() < 200){
+        if (Player.getY() + 35 < 50){
             LevelChange(0, -1);
-            Player.setY(680);
+            Player.setY(880);
             return;
         }
-        if (Player.getX() > 1920 - 200){
+        if (Player.getX() + 35 > 1920 - 50){
             LevelChange(1, 0);
-            Player.setX(400);
+            Player.setX(200);
             return;
         }
-        if (Player.getX() < 200){
+        if (Player.getX() + 35 < 50){
             LevelChange(-1, 0);
-            Player.setX(1520);
+            Player.setX(1720);
+
         }
     }
 

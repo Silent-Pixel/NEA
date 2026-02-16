@@ -1,11 +1,11 @@
-package io.github.some_example_name;
+package io.github.some_example_name.Pathfinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class DijkstraPathfinding {
 
-    int[][] map;
+    public int[][] map;
     int w, h;
 
     public DijkstraPathfinding(int[][] map){
@@ -50,7 +50,7 @@ public class DijkstraPathfinding {
                 if (NextX < 0 || NextY < 0 || NextX >= w || NextY >= h){
                     continue;
                 }
-                if (map[NextY][NextX] != 47){
+                if (map[NextY][NextX] == 47){
                     continue;
                 }
                 int NewDistance = distance[y][x] + 1;
