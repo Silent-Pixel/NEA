@@ -137,6 +137,7 @@ public class PlayerAnimation implements ApplicationListener {
         PlayerMovement();
         PlayerAnimationDetermination();
         PlayerAnimationRendering();
+        PlayerHealthBar();
     }
 
     public void PlayerMovement(){
@@ -170,17 +171,20 @@ public class PlayerAnimation implements ApplicationListener {
 
     public void PlayerAnimationDetermination(){
 
+        AttackTime += Gdx.graphics.getDeltaTime();
         for (int  i = 0; i < Enemies.length; i++){
             if (EnemyCircle[i].contains(Player.getX() + 33, Player.getY() + 35) && IsAttacking){
-                AttackTime += Gdx.graphics.getDeltaTime();
+                CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
                 if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
                     boolean[] DamagedEnemy = new boolean[Enemies.length];
                     DamagedEnemy[i] = true;
                     EnemyAnimation.setIsDamageTaken(DamagedEnemy);
+                    IsAttacking = false;
                     IsAttack01OnCooldown = true;
                     AttackTime = 0f;
                     Enemies[i].setHealth(Enemies[i].getHealth() - 50);
                     System.out.println("Enemy " + i + " health " + Enemies[i].getHealth());
+                    break;
                 }
             }
         }
@@ -195,7 +199,6 @@ public class PlayerAnimation implements ApplicationListener {
         }
 
         else if (IsAttacking){
-            AttackTime += Gdx.graphics.getDeltaTime();
             CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
             if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
                 IsAttacking = false;
@@ -244,6 +247,20 @@ public class PlayerAnimation implements ApplicationListener {
             }
         }
         batch.end();
+    }
+
+    public void PlayerHealthBar(){
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+
+        sr.setColor(0.2f, 0f, 0f, 0.8f);
+        sr.rect(Player.getX() + 10, Player.getY() + 80, 60f, 5f);
+
+        sr.setColor(1f, 0f, 0f, 0.9f);
+        sr.rect(Player.getX() + 10, Player.getY() + 80, 60f * Math.max(0, Player.getHealth() / 100), 5f);
+
+        sr.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     @Override

@@ -116,7 +116,6 @@ public class EnemyAnimation implements ApplicationListener {
 
     @Override
     public void render() {
-
         drawPathfindingLines();
 
         Circle PlayerCircle = new Circle(Player.getX() + 33, Player.getY() + 35, 70);
@@ -130,7 +129,12 @@ public class EnemyAnimation implements ApplicationListener {
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         batch.begin();
+        sr.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < Enemies.length; i++) {
+
+            if (Enemies[i].getHealth() <= 0){
+                continue;
+            }
 
             /*Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -145,8 +149,10 @@ public class EnemyAnimation implements ApplicationListener {
 
             EnemyAnimationDetermination(PlayerCircle, i);
             EnemyAnimationRendering(i);
+            EnemyHealthBars(i);
         }
         batch.end();
+        sr.end();
 
     }
 
@@ -168,7 +174,7 @@ public class EnemyAnimation implements ApplicationListener {
                 PlayerAnimation.setIsDamageTaken(true);
                 IsAttackOnCooldown[i] = true;
                 Attack01Time[i] = 0f;
-                Player.setHealth(Player.getHealth() - 0);
+                Player.setHealth(Player.getHealth() - 10);
                 System.out.println("Player health: " + Player.getHealth());
             }
         }
@@ -203,6 +209,18 @@ public class EnemyAnimation implements ApplicationListener {
         else {
             batch.draw(CurrentFrame, Enemies[i].getX() + 64, Enemies[i].getY(), -2 * 32, 2 * 32);
         }
+    }
+
+    public void EnemyHealthBars(int i){
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+
+        sr.setColor(0.2f, 0f, 0f, 0.8f);
+        sr.rect(Enemies[i].getX(), Enemies[i].getY() + 70, 60f, 5f);
+
+        sr.setColor(1f, 0f, 0f, 0.8f);
+        sr.rect(Enemies[i].getX(), Enemies[i].getY() + 70, 60f * Math.max(0, Enemies[i].getHealth() / 100), 5f);
+
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     private void drawPathfindingLines() {

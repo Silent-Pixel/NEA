@@ -48,7 +48,7 @@ public class OptionsScreen implements Screen {
         });
         table.add(VolumeSlider).width(230).height(100).padBottom(20).row();
 
-        TextButton BackToMainMenu = new TextButton("back", skin);
+        TextButton BackToMainMenu = new TextButton("Back", skin);
         BackToMainMenu.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
