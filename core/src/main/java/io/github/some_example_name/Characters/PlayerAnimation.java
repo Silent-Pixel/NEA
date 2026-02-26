@@ -44,6 +44,11 @@ public class PlayerAnimation implements ApplicationListener {
         this.Enemies = Enemies;
     }
 
+    public void setEnemies(Enemy[] Enemies){
+        this.Enemies = Enemies;
+        this.EnemyCircle = new Circle[Enemies.length];
+    }
+
     public void setEnemyAnimation(EnemyAnimation EnemyAnimation){
         this.EnemyAnimation = EnemyAnimation;
     }
@@ -183,22 +188,17 @@ public class PlayerAnimation implements ApplicationListener {
                     IsAttack01OnCooldown = true;
                     AttackTime = 0f;
                     Enemies[i].setHealth(Enemies[i].getHealth() - 50);
+                    if (Player.getHealth() < 95){
+                        Player.setHealth(Player.getHealth() + 5);
+                        System.out.println("Player +5 health");
+                    }
                     System.out.println("Enemy " + i + " health " + Enemies[i].getHealth());
                     break;
                 }
             }
         }
 
-        if (IsAttack01OnCooldown){
-            Attack01CooldownTimer += Gdx.graphics.getDeltaTime();
-            CurrentFrame = PlayerIdleAnimation.getKeyFrame(IdleTime, true);
-            if (Attack01CooldownTimer > 2f){
-                IsAttack01OnCooldown = false;
-                Attack01CooldownTimer = 0f;
-            }
-        }
-
-        else if (IsAttacking){
+        if (IsAttacking){
             CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
             if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
                 IsAttacking = false;
@@ -211,6 +211,16 @@ public class PlayerAnimation implements ApplicationListener {
         else if (IsMoveKeyPressed){
             CurrentFrame = PlayerWalkAnimation.getKeyFrame(WalkTime, true);
             AttackTime = 0f;
+            IsAttack01OnCooldown = false;
+        }
+
+        else if (IsAttack01OnCooldown){
+            Attack01CooldownTimer += Gdx.graphics.getDeltaTime();
+            CurrentFrame = PlayerIdleAnimation.getKeyFrame(IdleTime, true);
+            if (Attack01CooldownTimer > 2f){
+                IsAttack01OnCooldown = false;
+                Attack01CooldownTimer = 0f;
+            }
         }
 
         else if (IsDamageTaken){

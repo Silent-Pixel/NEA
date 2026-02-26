@@ -24,11 +24,8 @@ public class GameScreen extends Game implements Screen {
     private boolean IsInitialised = false;
 
     Player Player = new Player(800, 250);
-    Enemy[] Enemies = {
-        new Enemy(500, 500),
-        new Enemy(700, 500)
-    };
     LevelSystem LevelSystem = new LevelSystem(Player);
+    Enemy[] Enemies = new Enemy[0];
     PlayerAnimation PlayerAnimation = new PlayerAnimation(Player, Enemies);
     EnemyAnimation EnemyAnimation = new EnemyAnimation(Player, LevelSystem, PlayerAnimation, Enemies);
 
@@ -37,7 +34,9 @@ public class GameScreen extends Game implements Screen {
 
         if (!IsInitialised){
             PlayerAnimation.setEnemyAnimation(EnemyAnimation);
+            LevelSystem.setEnemyAnimation(EnemyAnimation);
             LevelSystem.create();
+            EnemyAnimation.setEnemies(LevelSystem.getCurrentEnemies());
             PlayerAnimation.create();
             EnemyAnimation.create();
             IsInitialised = true;

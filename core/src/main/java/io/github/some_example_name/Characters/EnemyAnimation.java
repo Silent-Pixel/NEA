@@ -48,12 +48,33 @@ public class EnemyAnimation implements ApplicationListener {
         this.IsDamageTaken = IsDamageTaken;
     }
 
+    public Enemy[] getEnemies(){
+        return Enemies;
+    }
+
+    public void setEnemies(Enemy[] newEnemy){
+        this.Enemies = newEnemy;
+        DijkstraPathfinding DijkstraPathfinding = new DijkstraPathfinding(LevelSystem.getCurrentLevel());
+        IdleTime = new float[newEnemy.length];
+        WalkTime = new float[newEnemy.length];
+        Attack01Time = new float[newEnemy.length];
+        Attack01CooldownTimer = new float[newEnemy.length];
+        IsAttackOnCooldown = new boolean[newEnemy.length];
+        IsDamageTaken = new boolean[newEnemy.length];
+        DamageTime = new float[newEnemy.length];
+        for (Enemy enemy : newEnemy){
+            enemy.DijkstraPathfinding = DijkstraPathfinding;
+        }
+        if (PlayerAnimation != null){
+            PlayerAnimation.setEnemies(newEnemy);
+        }
+    }
+
     @Override
     public void create() {
         sr = new ShapeRenderer();
         batch = new SpriteBatch();
-        int[][] CurrentMap = LevelSystem.getCurrentLevel();
-        DijkstraPathfinding DijkstraPathfinding = new DijkstraPathfinding(CurrentMap);
+        DijkstraPathfinding DijkstraPathfinding = new DijkstraPathfinding(LevelSystem.getCurrentLevel());
         IdleTime = new float[Enemies.length];
         WalkTime = new float[Enemies.length];
         Attack01Time = new float[Enemies.length];
@@ -123,15 +144,16 @@ public class EnemyAnimation implements ApplicationListener {
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(new Color(1, 1, 1, 0.2f));
-        sr.circle(Enemies[0].getX() + 28, Enemies[0].getY() + 12, 100);
+        sr.setColor(1, 1, 1, 0.2f);
+        if (Enemies.length > 0){
+            sr.circle(Enemies[0].getX() + 28, Enemies[0].getY() + 12, 100);
+        }
         sr.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
         batch.begin();
         sr.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < Enemies.length; i++) {
-
             if (Enemies[i].getHealth() <= 0){
                 continue;
             }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import io.github.some_example_name.Pathfinding.DijkstraPathfinding;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Enemy {
 
@@ -30,7 +31,7 @@ public class Enemy {
         int PlayerTileX = (PlayerX / 64);
         int PlayerTileY = (PlayerY / 64);
 
-        if (EnemyTileX != PlayerTileX && EnemyTileY != PlayerTileY){
+        if (EnemyTileX != PlayerTileX || EnemyTileY != PlayerTileY){
             CurrentPath = DijkstraPathfinding.FindPath(EnemyTileX, EnemyTileY, PlayerTileX, PlayerTileY);
             if (!CurrentPath.isEmpty()){
                 HasPath = true;
@@ -46,27 +47,35 @@ public class Enemy {
             return;
         }
 
-        for (int i = 0; i < CurrentPath.size() - 1; i++){
-            int[] CurrentTile = CurrentPath.get(i);
-            int[] NextTile = CurrentPath.get(i + 1);
+        int[] NextTile = CurrentPath.get(1);
+        NextX = NextTile[0] * 64;
+        NextY = NextTile[1] * 64;
 
-            CurrentX = CurrentTile[0] * 64 + 32;
-            CurrentY = CurrentTile[1] * 64 + 32;
-            NextX = NextTile[0] * 64 + 32;
-            NextY = NextTile[1] * 64 + 32;
+        if (Math.abs(NextX - getX()) < getSpeed() + 1 && Math.abs(NextY - getY()) < getSpeed() + 1){
+            setX(NextX);
+            setY(NextY);
+            CurrentPath.remove(0);
+            if (CurrentPath.size() < 2){
+                HasPath = false;
+            }
+            return;
         }
 
-        if (CurrentX < NextX){
-            setX(getX() + getSpeed());
+        if (Math.abs(NextX - getX()) > Math.abs(NextY - getY())){
+            if (NextX - getX() > 0){
+                setX(getX() + getSpeed());
+            }
+            else{
+                setX(getX() - getSpeed());
+            }
         }
-        else if (CurrentX > NextX){
-            setX(getX() - getSpeed());
-        }
-        else if (CurrentY < NextY){
-            setY(getY() + getSpeed());
-        }
-        else {
-            setY(getY() - getSpeed());
+        else{
+            if(NextY - getY() > 0){
+                setY(getY() + getSpeed());
+            }
+            else{
+                setY(getY() - getSpeed());
+            }
         }
     }
 

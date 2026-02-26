@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import io.github.some_example_name.Characters.Enemy;
+import io.github.some_example_name.Characters.EnemyAnimation;
 import io.github.some_example_name.Characters.Player;
 
 import java.util.ArrayList;
@@ -23,9 +25,14 @@ public class LevelSystem extends ApplicationAdapter {
     LevelGrid LevelGrid;
     GridCell GridCell;
     private final Player Player;
+    private EnemyAnimation EnemyAnimation;
 
     public LevelSystem(Player Player){
         this.Player = Player;
+    }
+
+    public void setEnemyAnimation(EnemyAnimation EnemyAnimation){
+        this.EnemyAnimation = EnemyAnimation;
     }
 
     @Override
@@ -105,11 +112,26 @@ public class LevelSystem extends ApplicationAdapter {
     }
 
     public void LevelChange(int ChangeX, int ChangeY){
-        int NewX = GridCell.getGridX() + ChangeX;
-        int NewY = GridCell.getGridY() + ChangeY;
-        GridCell = LevelGrid.GetOrMakeCell(NewX, NewY);
+        if (EnemyAnimation != null){
+            GridCell.setEnemies(EnemyAnimation.getEnemies());
+        }
+
+        GridCell = LevelGrid.GetOrMakeCell(GridCell.getGridX() + ChangeX, GridCell.getGridY() + ChangeY);
         CurrentLevel = GridCell.getLevelData();
         System.out.println("Player now at grid (" + GridCell.getGridX() + ", " + GridCell.getGridY() + ")");
+
+        if (EnemyAnimation != null){
+            EnemyAnimation.setEnemies(GridCell.getEnemies());
+        }
+    }
+
+    public Enemy[] getCurrentEnemies(){
+        if (GridCell != null){
+            return GridCell.getEnemies();
+        }
+        else {
+            return new Enemy[0];
+        }
     }
 
     @Override
@@ -124,10 +146,7 @@ public class LevelSystem extends ApplicationAdapter {
         if (CurrentLevel != null) {
             for (int i = 0; i < CurrentLevel.length; i++) {
                 for (int j = 0; j < CurrentLevel[i].length; j++) {
-                    int tileX = CurrentLevel[i][j] % tiles[0].length; // column in the tileset
-                    int tileY = CurrentLevel[i][j] / tiles[0].length; // row in the tileset
-
-                    batch.draw(tiles[tileY][tileX], j * 64, (CurrentLevel.length - 1 - i) * 64, 64, 64);
+                    batch.draw(tiles[/* y */ CurrentLevel[i][j] / tiles[0].length][/* x */ CurrentLevel[i][j] % tiles[0].length], j * 64, (CurrentLevel.length - 1 - i) * 64, 64, 64);
                 }
             }
         }

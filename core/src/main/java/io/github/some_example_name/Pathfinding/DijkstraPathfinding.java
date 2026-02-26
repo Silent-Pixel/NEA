@@ -50,7 +50,7 @@ public class DijkstraPathfinding {
                 if (NextX < 0 || NextY < 0 || NextX >= w || NextY >= h){
                     continue;
                 }
-                if (map[NextY][NextX] == 47){
+                if (map[NextY][NextX] != 47){
                     continue;
                 }
                 int NewDistance = distance[y][x] + 1;
