@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import io.github.some_example_name.Pathfinding.DijkstraPathfinding;
 import io.github.some_example_name.Levels.LevelSystem;
+import sun.jvm.hotspot.types.JBooleanField;
 
 public class EnemyAnimation implements ApplicationListener {
 
@@ -44,8 +45,8 @@ public class EnemyAnimation implements ApplicationListener {
         this.Enemies = Enemies;
     }
 
-    public void setIsDamageTaken(boolean[] IsDamageTaken){
-        this.IsDamageTaken = IsDamageTaken;
+    public void setIsDamageTaken(int EnemyIndex, boolean IsDamageTaken){
+        this.IsDamageTaken[EnemyIndex] = IsDamageTaken;
     }
 
     public Enemy[] getEnemies(){
@@ -80,6 +81,8 @@ public class EnemyAnimation implements ApplicationListener {
         Attack01Time = new float[Enemies.length];
         Attack01CooldownTimer = new float[Enemies.length];
         IsAttackOnCooldown = new boolean[Enemies.length];
+        IsDamageTaken = new boolean[Enemies.length];
+        DamageTime = new float[Enemies.length];
 
         for (Enemy Enemy : Enemies){
             Enemy.DijkstraPathfinding = DijkstraPathfinding;
@@ -145,8 +148,8 @@ public class EnemyAnimation implements ApplicationListener {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         sr.begin(ShapeRenderer.ShapeType.Filled);
         sr.setColor(1, 1, 1, 0.2f);
-        if (Enemies.length > 0){
-            sr.circle(Enemies[0].getX() + 28, Enemies[0].getY() + 12, 100);
+        for (Enemy enemy : Enemies) {
+            sr.circle(enemy.getX() + 28, enemy.getY() + 12, 100);
         }
         sr.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -180,7 +183,17 @@ public class EnemyAnimation implements ApplicationListener {
 
     public void EnemyAnimationDetermination(Circle PlayerCircle, int i){
 
-        if (IsAttackOnCooldown[i]) {
+        if (IsDamageTaken[i]){
+            DamageTime[i] += Gdx.graphics.getDeltaTime();
+            CurrentFrame = EnemyDamageAnimation.getKeyFrame(DamageTime[i], false);
+            if (EnemyDamageAnimation.isAnimationFinished(DamageTime[i])){
+                IsDamageTaken[i] = false;
+                DamageTime[i] = 0f;
+                System.out.println("Enemy Damaged");
+            }
+        }
+
+        else if (IsAttackOnCooldown[i]) {
             Attack01CooldownTimer[i] += Gdx.graphics.getDeltaTime();
             CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime[i], true);
             if (Attack01CooldownTimer[i] > 1f) {
@@ -196,32 +209,37 @@ public class EnemyAnimation implements ApplicationListener {
                 PlayerAnimation.setIsDamageTaken(true);
                 IsAttackOnCooldown[i] = true;
                 Attack01Time[i] = 0f;
-                Player.setHealth(Player.getHealth() - 10);
+                Player.setHealth(Player.getHealth() - 0);
                 System.out.println("Player health: " + Player.getHealth());
             }
         }
 
-        else if (!PlayerCircle.contains(Enemies[i].getX() + 28, Enemies[i].getY() + 35)) {
+        else {
+            Enemies[i].UpdatePath(LevelSystem.getCurrentLevel(), (int) Player.getX(), (int) Player.getY());
+            Enemies[i].FollowPath();
+        }
+
+        if (Enemies[i].HasPath){
+            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime[i], true);
+        }
+
+        else {
+            CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime[i], true);
+        }
+        Attack01Time[i] = 0f;
+
+
+        /*else if (!PlayerCircle.contains(Enemies[i].getX() + 28, Enemies[i].getY() + 35)) {
             Enemies[i].UpdatePath(LevelSystem.getCurrentLevel(), (int) Player.getX(), (int) Player.getY());
             Enemies[i].FollowPath();
             CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime[i], true);
             Attack01Time[i] = 0f;
         }
 
-        else if (IsDamageTaken[i]){
-            DamageTime[i] += Gdx.graphics.getDeltaTime();
-            CurrentFrame = EnemyDamageAnimation.getKeyFrame(DamageTime[i], false);
-            if (EnemyDamageAnimation.isAnimationFinished(DamageTime[i])){
-                IsDamageTaken[i] = false;
-                DamageTime[i] = 0f;
-
-            }
-        }
-
         else {
             CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime[i], true);
             Attack01Time[i] = 0f;
-        }
+        }*/
     }
 
     public void EnemyAnimationRendering(int i){
@@ -240,7 +258,7 @@ public class EnemyAnimation implements ApplicationListener {
         sr.rect(Enemies[i].getX(), Enemies[i].getY() + 70, 60f, 5f);
 
         sr.setColor(1f, 0f, 0f, 0.8f);
-        sr.rect(Enemies[i].getX(), Enemies[i].getY() + 70, 60f * Math.max(0, Enemies[i].getHealth() / 100), 5f);
+        sr.rect(Enemies[i].getX(), Enemies[i].getY() + 70, 60f * Enemies[i].getHealth() / 100, 5f);
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }

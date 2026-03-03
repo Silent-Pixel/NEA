@@ -181,14 +181,12 @@ public class PlayerAnimation implements ApplicationListener {
             if (EnemyCircle[i].contains(Player.getX() + 33, Player.getY() + 35) && IsAttacking){
                 CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
                 if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
-                    boolean[] DamagedEnemy = new boolean[Enemies.length];
-                    DamagedEnemy[i] = true;
-                    EnemyAnimation.setIsDamageTaken(DamagedEnemy);
+                    EnemyAnimation.setIsDamageTaken(i, true);
                     IsAttacking = false;
                     IsAttack01OnCooldown = true;
                     AttackTime = 0f;
                     Enemies[i].setHealth(Enemies[i].getHealth() - 50);
-                    if (Player.getHealth() < 95){
+                    if (Player.getHealth() <= 95){
                         Player.setHealth(Player.getHealth() + 5);
                         System.out.println("Player +5 health");
                     }
@@ -264,10 +262,10 @@ public class PlayerAnimation implements ApplicationListener {
         sr.begin(ShapeRenderer.ShapeType.Filled);
 
         sr.setColor(0.2f, 0f, 0f, 0.8f);
-        sr.rect(Player.getX() + 10, Player.getY() + 80, 60f, 5f);
+        sr.rect(Player.getX() + 2, Player.getY() + 80, 60f, 5f);
 
         sr.setColor(1f, 0f, 0f, 0.9f);
-        sr.rect(Player.getX() + 10, Player.getY() + 80, 60f * Math.max(0, Player.getHealth() / 100), 5f);
+        sr.rect(Player.getX() + 2, Player.getY() + 80, 60f * Player.getHealth() / 100, 5f);
 
         sr.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
