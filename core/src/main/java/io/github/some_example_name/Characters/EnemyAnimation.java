@@ -142,8 +142,6 @@ public class EnemyAnimation implements ApplicationListener {
     public void render() {
         drawPathfindingLines();
 
-        Circle PlayerCircle = new Circle(Player.getX() + 33, Player.getY() + 35, 70);
-
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -172,7 +170,7 @@ public class EnemyAnimation implements ApplicationListener {
             IdleTime[i] += Gdx.graphics.getDeltaTime();
             WalkTime[i] += Gdx.graphics.getDeltaTime();
 
-            EnemyAnimationDetermination(PlayerCircle, i);
+            EnemyAnimationDetermination(i);
             EnemyAnimationRendering(i);
             EnemyHealthBars(i);
         }
@@ -181,7 +179,7 @@ public class EnemyAnimation implements ApplicationListener {
 
     }
 
-    public void EnemyAnimationDetermination(Circle PlayerCircle, int i){
+    public void EnemyAnimationDetermination(int i){
 
         if (IsDamageTaken[i]){
             DamageTime[i] += Gdx.graphics.getDeltaTime();
@@ -202,7 +200,11 @@ public class EnemyAnimation implements ApplicationListener {
             }
         }
 
-        else if (PlayerCircle.contains(Enemies[i].getX() + 28, Enemies[i].getY() + 35)) {
+        else if (
+
+            Math.sqrt(Math.pow(Enemies[i].getX() - Player.getX(), 2) + Math.pow(Enemies[i].getY() - Player.getY(), 2)) <= 35
+
+        ) {
             Attack01Time[i] += Gdx.graphics.getDeltaTime();
             CurrentFrame = EnemyAttackAnimation.getKeyFrame(Attack01Time[i], false);
             if (EnemyAttackAnimation.isAnimationFinished(Attack01Time[i])) {
@@ -227,19 +229,6 @@ public class EnemyAnimation implements ApplicationListener {
             CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime[i], true);
         }
         Attack01Time[i] = 0f;
-
-
-        /*else if (!PlayerCircle.contains(Enemies[i].getX() + 28, Enemies[i].getY() + 35)) {
-            Enemies[i].UpdatePath(LevelSystem.getCurrentLevel(), (int) Player.getX(), (int) Player.getY());
-            Enemies[i].FollowPath();
-            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime[i], true);
-            Attack01Time[i] = 0f;
-        }
-
-        else {
-            CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime[i], true);
-            Attack01Time[i] = 0f;
-        }*/
     }
 
     public void EnemyAnimationRendering(int i){

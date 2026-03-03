@@ -37,7 +37,6 @@ public class PlayerAnimation implements ApplicationListener {
     private EnemyAnimation EnemyAnimation;
     String LastDirection;
     Enemy[] Enemies;
-    Circle[] EnemyCircle;
 
     public PlayerAnimation(Player Player, Enemy[] Enemies){
         this.Player = Player;
@@ -46,7 +45,6 @@ public class PlayerAnimation implements ApplicationListener {
 
     public void setEnemies(Enemy[] Enemies){
         this.Enemies = Enemies;
-        this.EnemyCircle = new Circle[Enemies.length];
     }
 
     public void setEnemyAnimation(EnemyAnimation EnemyAnimation){
@@ -62,7 +60,6 @@ public class PlayerAnimation implements ApplicationListener {
         batch = new SpriteBatch();
         sr = new ShapeRenderer();
         LastDirection = "Right";
-        EnemyCircle = new Circle[Enemies.length];
 
         PlayerIdleTile = new Texture(Gdx.files.internal("Soldier/Soldier-Idle.png"));
         TextureRegion[][] PlayerIdleTextureRegion = TextureRegion.split(PlayerIdleTile, PlayerIdleTile.getWidth() / 6, PlayerIdleTile.getHeight());
@@ -135,10 +132,6 @@ public class PlayerAnimation implements ApplicationListener {
         WalkTime += Gdx.graphics.getDeltaTime();
         IsMoveKeyPressed = false;
 
-        for (int i = 0; i < Enemies.length; i++){
-            EnemyCircle[i] = new Circle(Enemies[i].getX() + 28, Enemies[i].getY() + 12, 100);
-        }
-
         PlayerMovement();
         PlayerAnimationDetermination();
         PlayerAnimationRendering();
@@ -178,7 +171,11 @@ public class PlayerAnimation implements ApplicationListener {
 
         AttackTime += Gdx.graphics.getDeltaTime();
         for (int  i = 0; i < Enemies.length; i++){
-            if (EnemyCircle[i].contains(Player.getX() + 33, Player.getY() + 35) && IsAttacking){
+            if (
+
+                Math.sqrt(Math.pow(Enemies[i].getX() - Player.getX(), 2) + Math.pow(Enemies[i].getY() - Player.getY(), 2)) <= 50
+
+            ){
                 CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
                 if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
                     EnemyAnimation.setIsDamageTaken(i, true);
