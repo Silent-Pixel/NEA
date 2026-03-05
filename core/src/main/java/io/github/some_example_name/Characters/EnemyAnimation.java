@@ -139,17 +139,6 @@ public class EnemyAnimation implements ApplicationListener {
 
     @Override
     public void render() {
-        //Renders a translucent circle around the enemies to show its valid hitting area
-        //Used for testing
-        Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(1, 1, 1, 0.2f);
-        for (Enemy enemy : Enemies) {
-            sr.circle(enemy.getX() + 28, enemy.getY() + 12, 100);
-        }
-        sr.end();
-        Gdx.gl.glDisable(GL20.GL_BLEND);
 
         batch.begin();
         sr.begin(ShapeRenderer.ShapeType.Filled);

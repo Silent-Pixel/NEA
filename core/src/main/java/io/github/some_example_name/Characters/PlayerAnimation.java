@@ -125,14 +125,6 @@ public class PlayerAnimation implements ApplicationListener {
     @Override
     public void render() {
 
-        Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        sr.begin(ShapeRenderer.ShapeType.Filled);
-        sr.setColor(new Color(1, 1, 1, 0.1f));
-        sr.circle(Player.getX() + 33, Player.getY() + 35, 70);
-        sr.end();
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-
         IdleTime += Gdx.graphics.getDeltaTime();
         WalkTime += Gdx.graphics.getDeltaTime();
         IsMoveKeyPressed = false;
