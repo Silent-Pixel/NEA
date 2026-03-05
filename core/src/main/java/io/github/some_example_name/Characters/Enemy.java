@@ -2,9 +2,7 @@ package io.github.some_example_name.Characters;
 
 import com.badlogic.gdx.Gdx;
 import io.github.some_example_name.Pathfinding.DijkstraPathfinding;
-
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Enemy {
 

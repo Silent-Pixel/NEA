@@ -61,10 +61,4 @@ public class GridCell {
         }
         return false;
     }
-
-    @Override
-    public String toString() {
-        return "GridCell at (" + gridX + ", " + gridY + ") with level " + LevelIndex;
-
-    }
 }

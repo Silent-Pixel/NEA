@@ -10,10 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
 import io.github.some_example_name.Levels.LevelSystem;
-
-import java.util.Arrays;
 import java.util.Objects;
 
 public class PlayerAnimation implements ApplicationListener {
@@ -236,9 +233,7 @@ public class PlayerAnimation implements ApplicationListener {
                         Enemies[i].setHealth(Enemies[i].getHealth() - 50);
                         if (Player.getHealth() <= 85){
                             Player.setHealth(Player.getHealth() + 15);
-                            System.out.println("Player +15 health");
                         }
-                        System.out.println("Enemy " + i + " health " + Enemies[i].getHealth());
                         hitEnemy = true;
                         break;
                     }

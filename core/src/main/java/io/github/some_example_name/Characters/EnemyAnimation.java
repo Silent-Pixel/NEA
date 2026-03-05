@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
 import io.github.some_example_name.Pathfinding.DijkstraPathfinding;
 import io.github.some_example_name.Levels.LevelSystem;
 
@@ -140,8 +139,6 @@ public class EnemyAnimation implements ApplicationListener {
 
     @Override
     public void render() {
-        drawPathfindingLines();
-
         //Renders a translucent circle around the enemies to show its valid hitting area
         //Used for testing
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
@@ -188,7 +185,6 @@ public class EnemyAnimation implements ApplicationListener {
             if (EnemyDamageAnimation.isAnimationFinished(DamageTime[i])){
                 IsDamageTaken[i] = false;
                 DamageTime[i] = 0f;
-                System.out.println("Enemy Damaged");
             }
         }
 
@@ -213,12 +209,10 @@ public class EnemyAnimation implements ApplicationListener {
                 IsAttackOnCooldown[i] = true;
                 Attack01Time[i] = 0f;
                 Player.setHealth(Player.getHealth() - 10);
-                System.out.println("Player health: " + Player.getHealth());
             }
         }
 
-        else {
-            Enemies[i].UpdatePath(LevelSystem.getCurrentLevel(), (int) Player.getX(), (int) Player.getY());
+        else {Enemies[i].UpdatePath(LevelSystem.getCurrentLevel(), (int) Player.getX(), (int) Player.getY());
             Enemies[i].FollowPath();
             if (Enemies[i].HasPath){
                 CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime[i], true);
@@ -251,65 +245,6 @@ public class EnemyAnimation implements ApplicationListener {
 
         sr.setColor(1f, 0f, 0f, 0.8f);
         sr.rect(Enemies[i].getX(), Enemies[i].getY() + 70, 60f * Enemies[i].getHealth() / 100, 5f);
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-    }
-
-    //Draws the path that the enemies will take
-    //Used for testing
-    private void drawPathfindingLines() {
-        Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        sr.begin(ShapeRenderer.ShapeType.Line);
-
-        Color[] pathColors = {
-            new Color(1, 0, 0, 0.7f),    // Red for enemy 0
-            new Color(0, 1, 0, 0.7f),    // Green for enemy 1
-            new Color(0, 0, 1, 0.7f),    // Blue for enemy 2
-            new Color(1, 1, 0, 0.7f),    // Yellow for enemy 3
-            new Color(1, 0, 1, 0.7f),    // Magenta for enemy 4
-            new Color(0, 1, 1, 0.7f)     // Cyan for enemy 5
-        };
-
-        for (int i = 0; i < Enemies.length; i++) {
-            java.util.ArrayList<int[]> path = Enemies[i].getCurrentPath();
-
-            if (path != null && !path.isEmpty()) {
-                sr.setColor(pathColors[i % pathColors.length]);
-
-                for (int j = 0; j < path.size() - 1; j++) {
-                    int[] current = path.get(j);
-                    int[] next = path.get(j + 1);
-
-                    float x1 = current[0] * 64 + 32;
-                    float y1 = current[1] * 64 + 32;
-                    float x2 = next[0] * 64 + 32;
-                    float y2 = next[1] * 64 + 32;
-
-                    sr.line(x1, y1, x2, y2);
-                    sr.line(x1 + 1, y1, x2 + 1, y2);
-                    sr.line(x1, y1 + 1, x2, y2 + 1);
-                    sr.line(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
-                }
-            }
-        }
-
-        for (int i = 0; i < Enemies.length; i++) {
-            java.util.ArrayList<int[]> path = Enemies[i].getCurrentPath();
-
-            if (path != null && !path.isEmpty()) {
-                sr.setColor(pathColors[i % pathColors.length]);
-
-                // Draw circles at each waypoint for clarity
-                for (int[] waypoint : path) {
-                    float x = waypoint[0] * 64 + 32;
-                    float y = waypoint[1] * 64 + 32;
-                    sr.circle(x, y, 5);
-                }
-            }
-        }
-        sr.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }

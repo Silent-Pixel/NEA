@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import io.github.some_example_name.Characters.Enemy;
 import io.github.some_example_name.Characters.EnemyAnimation;
 import io.github.some_example_name.Characters.Player;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -80,10 +79,8 @@ public class LevelSystem extends ApplicationAdapter {
                 }
             }
             sc.close();
-            System.out.println("Loaded " + Levels.size() + " levels from file");
         }
         catch (Exception e){
-            System.err.println("Error loading levels from file: " + e.getMessage());
             e.printStackTrace();
         }
         return Levels;
@@ -122,7 +119,6 @@ public class LevelSystem extends ApplicationAdapter {
 
         GridCell = LevelGrid.GetOrMakeCell(GridCell.getGridX() + ChangeX, GridCell.getGridY() + ChangeY);
         CurrentLevel = GridCell.getLevelData();
-        System.out.println("Player now at grid (" + GridCell.getGridX() + ", " + GridCell.getGridY() + ")");
 
         if (EnemyAnimation != null){
             EnemyAnimation.setEnemies(GridCell.getEnemies());
