@@ -52,6 +52,7 @@ public class LevelSystem extends ApplicationAdapter {
         }
     }
 
+    //Reads in the arrays from the txt files and stores in an array list
     public ArrayList<int[][]> ReadInLevelsFromFile(String FileName){
         ArrayList<int[][]> Levels = new ArrayList<>();
         try {
@@ -88,6 +89,7 @@ public class LevelSystem extends ApplicationAdapter {
         return Levels;
     }
 
+    //Boundaries of where a new level change needs to happen
     public void LevelBoundaries(){
         if (Player.getY() + 35 > 1080 - 50){
             LevelChange(0, 1);
@@ -111,6 +113,8 @@ public class LevelSystem extends ApplicationAdapter {
         }
     }
 
+    //Changes to a new level in the direction passed into it
+    //Will either get the level is already exists otherwise a new one will be made
     public void LevelChange(int ChangeX, int ChangeY){
         if (EnemyAnimation != null){
             GridCell.setEnemies(EnemyAnimation.getEnemies());
@@ -142,6 +146,7 @@ public class LevelSystem extends ApplicationAdapter {
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
+        //Renders the current level to the screen
         batch.begin();
         if (CurrentLevel != null) {
             for (int i = 0; i < CurrentLevel.length; i++) {
@@ -159,5 +164,7 @@ public class LevelSystem extends ApplicationAdapter {
 
     @Override
     public void dispose() {
+        batch.dispose();
+        tileset.dispose();
     }
 }

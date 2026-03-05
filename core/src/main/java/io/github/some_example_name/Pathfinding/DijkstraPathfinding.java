@@ -14,6 +14,7 @@ public class DijkstraPathfinding {
         this.w = map[0].length;
     }
 
+    //Finds a path from the enemy to the player by using Dijkstra's algorithm by using the array of the level to get the path rather than screen pixels
     public ArrayList<int[]> FindPath(int startX, int startY, int endX, int endY){
         int[][] distance = new int[h][w];
         int[][] previousX = new int[h][w];
@@ -50,7 +51,7 @@ public class DijkstraPathfinding {
                 if (NextX < 0 || NextY < 0 || NextX >= w || NextY >= h){
                     continue;
                 }
-                if (map[NextY][NextX] != 47){
+                if (map[h - 1 - NextY][NextX] != 47){
                     continue;
                 }
                 int NewDistance = distance[y][x] + 1;

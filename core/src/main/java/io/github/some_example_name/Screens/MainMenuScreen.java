@@ -140,11 +140,13 @@ public class MainMenuScreen extends Game implements Screen {
         EnemyIdleTime1 += Gdx.graphics.getDeltaTime();
         EnemyIdleTime2 += Gdx.graphics.getDeltaTime();
 
+        //Shows menu background
         batch.begin();
         batch.draw(BackgroundImage, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         batch.end();
 
+        //Renders 2 transparent rectangles to separate text and buttons from the background
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -154,17 +156,20 @@ public class MainMenuScreen extends Game implements Screen {
         sr.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
 
+        //Renders text on screen showing the controls
         batch.begin();
         font.getData().setScale(2f);
         font.draw(batch, "CONTROLS", 1550, 145);
         font.draw(batch, "WASD: Player Movement", 1550, 100);
         font.draw(batch, "LMB: Player Attack", 1550, 65);
 
+        //Renders in a player and 2 enemieis in idle animations
         batch.draw(EnemyIdleAnimation.getKeyFrame(EnemyIdleTime1, true), 400, 350, 2 * 32, 2 * 32);
         batch.draw(EnemyIdleAnimation.getKeyFrame(EnemyIdleTime2, true), 260, 610, 2 * 32, 2 * 32);
         batch.draw(PlayerIdleAnimation.getKeyFrame(PlayerIdleTime, true), 1500, 500, (float) -(3.5 * 17), (float) (3.5 * 22));
         batch.end();
 
+        //Renders the buttons on the screen
         stage.act(delta);
         stage.draw();
     }
@@ -176,6 +181,14 @@ public class MainMenuScreen extends Game implements Screen {
 
     @Override
     public void dispose() {
+        stage.dispose();
+        skin.dispose();
+        batch.dispose();
+        sr.dispose();
+        font.dispose();
+        BackgroundImage.dispose();
+        EnemyIdleTile.dispose();
+        PlayerIdleTile.dispose();
     }
 
     @Override public void pause() {}

@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import io.github.some_example_name.Pathfinding.DijkstraPathfinding;
 import io.github.some_example_name.Levels.LevelSystem;
-import sun.jvm.hotspot.types.JBooleanField;
 
 public class EnemyAnimation implements ApplicationListener {
 
@@ -88,6 +87,7 @@ public class EnemyAnimation implements ApplicationListener {
             Enemy.DijkstraPathfinding = DijkstraPathfinding;
         }
 
+        //Animations from assets set here
         EnemyIdleTile = new Texture(Gdx.files.internal("Enemy/Slime_Idle_Angry.png"));
         TextureRegion[][] EnemyIdleTextureRegion = TextureRegion.split(EnemyIdleTile, EnemyIdleTile.getWidth() / 4, EnemyIdleTile.getHeight());
         TextureRegion[] IdleFrame = new TextureRegion[4];
@@ -142,6 +142,8 @@ public class EnemyAnimation implements ApplicationListener {
     public void render() {
         drawPathfindingLines();
 
+        //Renders a translucent circle around the enemies to show its valid hitting area
+        //Used for testing
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -154,18 +156,12 @@ public class EnemyAnimation implements ApplicationListener {
 
         batch.begin();
         sr.begin(ShapeRenderer.ShapeType.Filled);
+        //Only renders those enemies whose health is above or equal to 0
+        //Not rendering dead enemies
         for (int i = 0; i < Enemies.length; i++) {
             if (Enemies[i].getHealth() <= 0){
                 continue;
             }
-
-            /*Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-            sr.begin(ShapeRenderer.ShapeType.Filled);
-            sr.setColor(new Color(1, 1, 1, 0.2f));
-            sr.circle(Enemies[i].getX(), Enemies[i].getY(), 100);
-            sr.end();
-            Gdx.gl.glDisable(GL20.GL_BLEND);*/
 
             IdleTime[i] += Gdx.graphics.getDeltaTime();
             WalkTime[i] += Gdx.graphics.getDeltaTime();
@@ -179,6 +175,11 @@ public class EnemyAnimation implements ApplicationListener {
 
     }
 
+    //Determines which animation to be played depending on what boolean flags are active
+    //Idle where there is no valid path for the enemies to follow
+    //Walk when the enemies are going towards the player
+    //Attack only when they are within the valid attacking distance of the player
+    //Damaged only when the player lands a successful hit in the valid hitting range
     public void EnemyAnimationDetermination(int i){
 
         if (IsDamageTaken[i]){
@@ -211,7 +212,7 @@ public class EnemyAnimation implements ApplicationListener {
                 PlayerAnimation.setIsDamageTaken(true);
                 IsAttackOnCooldown[i] = true;
                 Attack01Time[i] = 0f;
-                Player.setHealth(Player.getHealth() - 0);
+                Player.setHealth(Player.getHealth() - 10);
                 System.out.println("Player health: " + Player.getHealth());
             }
         }
@@ -219,18 +220,18 @@ public class EnemyAnimation implements ApplicationListener {
         else {
             Enemies[i].UpdatePath(LevelSystem.getCurrentLevel(), (int) Player.getX(), (int) Player.getY());
             Enemies[i].FollowPath();
+            if (Enemies[i].HasPath){
+                CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime[i], true);
+            }
+            else {
+                CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime[i], true);
+            }
         }
-
-        if (Enemies[i].HasPath){
-            CurrentFrame = EnemyWalkAnimation.getKeyFrame(WalkTime[i], true);
-        }
-
-        else {
-            CurrentFrame = EnemyIdleAnimation.getKeyFrame(IdleTime[i], true);
-        }
-        Attack01Time[i] = 0f;
     }
 
+    //Renders the enemy
+    //Negative width used to make the enemy face the other way
+    //Enemy faces towards the player
     public void EnemyAnimationRendering(int i){
         if (Player.getX() > Enemies[i].getX()){
             batch.draw(CurrentFrame, Enemies[i].getX(), Enemies[i].getY(), 2 * 32, 2 * 32);
@@ -240,6 +241,8 @@ public class EnemyAnimation implements ApplicationListener {
         }
     }
 
+    //Renders a health bar above the enemies
+    //Light red for actual health and dark red background for separation between the 2
     public void EnemyHealthBars(int i){
         Gdx.gl.glEnable(GL20.GL_BLEND);
 
@@ -252,13 +255,14 @@ public class EnemyAnimation implements ApplicationListener {
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
+    //Draws the path that the enemies will take
+    //Used for testing
     private void drawPathfindingLines() {
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         sr.begin(ShapeRenderer.ShapeType.Line);
 
-        // Different colors for each enemy
         Color[] pathColors = {
             new Color(1, 0, 0, 0.7f),    // Red for enemy 0
             new Color(0, 1, 0, 0.7f),    // Green for enemy 1
@@ -272,21 +276,17 @@ public class EnemyAnimation implements ApplicationListener {
             java.util.ArrayList<int[]> path = Enemies[i].getCurrentPath();
 
             if (path != null && !path.isEmpty()) {
-                // Set color for this enemy's path
                 sr.setColor(pathColors[i % pathColors.length]);
 
-                // Draw lines between each waypoint
                 for (int j = 0; j < path.size() - 1; j++) {
                     int[] current = path.get(j);
                     int[] next = path.get(j + 1);
 
-                    // Convert tile coordinates to pixel coordinates (center of tiles)
                     float x1 = current[0] * 64 + 32;
                     float y1 = current[1] * 64 + 32;
                     float x2 = next[0] * 64 + 32;
                     float y2 = next[1] * 64 + 32;
 
-                    // Draw a thick line (draw multiple times for thickness)
                     sr.line(x1, y1, x2, y2);
                     sr.line(x1 + 1, y1, x2 + 1, y2);
                     sr.line(x1, y1 + 1, x2, y2 + 1);
@@ -295,10 +295,6 @@ public class EnemyAnimation implements ApplicationListener {
             }
         }
 
-        sr.end();
-
-        // Draw waypoint circles
-        sr.begin(ShapeRenderer.ShapeType.Filled);
         for (int i = 0; i < Enemies.length; i++) {
             java.util.ArrayList<int[]> path = Enemies[i].getCurrentPath();
 
@@ -330,5 +326,10 @@ public class EnemyAnimation implements ApplicationListener {
 
     @Override
     public void dispose() {
+        batch.dispose();
+        sr.dispose();
+        EnemyIdleTile.dispose();
+        EnemyAttackTile.dispose();
+        EnemyDamageTile.dispose();
     }
 }

@@ -22,14 +22,16 @@ public class Enemy {
         this.DijkstraPathfinding = DijkstraPathfinding;
     }
 
+    //Gets an updated path for the enemy to follow
+    //Only gets called when player moves
     public void UpdatePath(int[][] map, int PlayerX, int PlayerY){
         DijkstraPathfinding.map = map;
 
         int EnemyTileX = (int)((x + 32) / 64);
         int EnemyTileY = (int)((y + 32) / 64);
 
-        int PlayerTileX = (PlayerX / 64);
-        int PlayerTileY = (PlayerY / 64);
+        int PlayerTileX = ((PlayerX + 32) / 64);
+        int PlayerTileY = ((PlayerY + 32) / 64);
 
         if (EnemyTileX != PlayerTileX || EnemyTileY != PlayerTileY){
             CurrentPath = DijkstraPathfinding.FindPath(EnemyTileX, EnemyTileY, PlayerTileX, PlayerTileY);
@@ -42,8 +44,9 @@ public class Enemy {
         }
     }
 
+    //Changes the enemies x and y values to follow the path from Dijkstra
     public void FollowPath(){
-        if (!HasPath || CurrentPath.isEmpty()){
+        if (!HasPath || CurrentPath.isEmpty() || CurrentPath.size() < 2){
             return;
         }
 

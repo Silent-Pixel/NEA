@@ -23,6 +23,7 @@ public class LevelGrid {
         }
     }
 
+    //Makes a random number of enemies for each new level
     public Enemy[] GenerateEnemies(){
         int EnemyCount = 1 + random.nextInt(4);
         Enemy[] enemies = new Enemy[EnemyCount];
@@ -32,6 +33,7 @@ public class LevelGrid {
         return enemies;
     }
 
+    //Check to see if a level already exists at a given position
     public GridCell FindCell(int gridX, int gridY){
         for (GridCell cell : Cells) {
             if (cell.DoCordsMatch(gridX, gridY)) {
@@ -41,6 +43,7 @@ public class LevelGrid {
         return null;
     }
 
+    //Makes a new level if one doesn't exist at a given position, otherwise returns existing level
     public GridCell GetOrMakeCell(int gridX, int gridY){
         GridCell ExistingCells = FindCell(gridX, gridY);
         if (ExistingCells != null){

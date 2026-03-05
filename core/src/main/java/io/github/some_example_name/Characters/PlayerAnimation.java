@@ -11,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import io.github.some_example_name.Levels.LevelSystem;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class PlayerAnimation implements ApplicationListener {
@@ -37,6 +39,7 @@ public class PlayerAnimation implements ApplicationListener {
     private EnemyAnimation EnemyAnimation;
     String LastDirection;
     Enemy[] Enemies;
+    LevelSystem LevelSystem;
 
     public PlayerAnimation(Player Player, Enemy[] Enemies){
         this.Player = Player;
@@ -51,6 +54,10 @@ public class PlayerAnimation implements ApplicationListener {
         this.EnemyAnimation = EnemyAnimation;
     }
 
+    public void setLevelSystem(LevelSystem LevelSystem){
+        this.LevelSystem = LevelSystem;
+    }
+
     public void setIsDamageTaken(boolean IsDamageTaken) {
         this.IsDamageTaken = IsDamageTaken;
     }
@@ -61,6 +68,7 @@ public class PlayerAnimation implements ApplicationListener {
         sr = new ShapeRenderer();
         LastDirection = "Right";
 
+        //Animations made from the assets
         PlayerIdleTile = new Texture(Gdx.files.internal("Soldier/Soldier-Idle.png"));
         TextureRegion[][] PlayerIdleTextureRegion = TextureRegion.split(PlayerIdleTile, PlayerIdleTile.getWidth() / 6, PlayerIdleTile.getHeight());
         TextureRegion[] IdleFrame = new TextureRegion[6];
@@ -132,33 +140,46 @@ public class PlayerAnimation implements ApplicationListener {
         WalkTime += Gdx.graphics.getDeltaTime();
         IsMoveKeyPressed = false;
 
-        PlayerMovement();
-        PlayerAnimationDetermination();
+        int PlayerTileX = (int)((Player.getX() + 20) / 64);
+        int PlayerTileY = (int)((Player.getY() + 20) / 64);
+
+        PlayerMovement(PlayerTileX, PlayerTileY);
+        PlayerAnimationDetermination(PlayerTileX, PlayerTileY);
         PlayerAnimationRendering();
         PlayerHealthBar();
     }
 
-    public void PlayerMovement(){
+    //Checks for WASD inputs from the user and moves in the respective direction as long as the next tile is a valid tile.
+    public void PlayerMovement(int PlayerTileX, int PlayerTileY){
+
         if (Gdx.input.isKeyPressed(Input.Keys.W)){
-            Player.setY(Player.getY() + Player.getSpeed());
-            IsMoveKeyPressed = true;
+            if (CheckValidMove(PlayerTileX, PlayerTileY + 1)){
+                Player.setY(Player.getY() + Player.getSpeed());
+                IsMoveKeyPressed = true;
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)){
             LastDirection = "Left";
-            Player.setX(Player.getX() - Player.getSpeed());
-            IsMoveKeyPressed = true;
+            if (CheckValidMove(PlayerTileX - 1, PlayerTileY)){
+                Player.setX(Player.getX() - Player.getSpeed());
+                IsMoveKeyPressed = true;
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            Player.setY(Player.getY() - Player.getSpeed());
-            IsMoveKeyPressed = true;
+            if (CheckValidMove(PlayerTileX, PlayerTileY - 1)){
+                Player.setY(Player.getY() - Player.getSpeed());
+                IsMoveKeyPressed = true;
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)){
             LastDirection = "Right";
-            Player.setX(Player.getX() + Player.getSpeed());
-            IsMoveKeyPressed = true;
+            if (CheckValidMove(PlayerTileX + 1, PlayerTileY)){
+                Player.setX(Player.getX() + Player.getSpeed());
+                IsMoveKeyPressed = true;
+            }
         }
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
@@ -167,33 +188,70 @@ public class PlayerAnimation implements ApplicationListener {
         }
     }
 
-    public void PlayerAnimationDetermination(){
+    //Determines which animation should be played
+    //Idle only when there are no inputs being put it
+    //Walk only when WASD are being pressed
+    //Attack only when the left mouse button is pressed
+    //Damaged only when the enemy lands a successful hit assuming they are within range to attack
+    public void PlayerAnimationDetermination(int PlayerTileX, int PlayerTileY){
 
-        AttackTime += Gdx.graphics.getDeltaTime();
-        for (int  i = 0; i < Enemies.length; i++){
-            if (
-
-                Math.sqrt(Math.pow(Enemies[i].getX() - Player.getX(), 2) + Math.pow(Enemies[i].getY() - Player.getY(), 2)) <= 50
-
-            ){
-                CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
-                if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
-                    EnemyAnimation.setIsDamageTaken(i, true);
-                    IsAttacking = false;
-                    IsAttack01OnCooldown = true;
-                    AttackTime = 0f;
-                    Enemies[i].setHealth(Enemies[i].getHealth() - 50);
-                    if (Player.getHealth() <= 95){
-                        Player.setHealth(Player.getHealth() + 5);
-                        System.out.println("Player +5 health");
-                    }
-                    System.out.println("Enemy " + i + " health " + Enemies[i].getHealth());
-                    break;
-                }
+        if (IsDamageTaken){
+            DamageTime += Gdx.graphics.getDeltaTime();
+            CurrentFrame = PlayerDamageAnimation.getKeyFrame(DamageTime, false);
+            if (PlayerDamageAnimation.isAnimationFinished(DamageTime)){
+                IsDamageTaken = false;
+                DamageTime = 0f;
             }
+            return;
+        }
+
+        if (PlayerHitSpike(PlayerTileX, PlayerTileY)){
+            DamageTime += Gdx.graphics.getDeltaTime();
+            CurrentFrame = PlayerDamageAnimation.getKeyFrame(DamageTime, false);
+            if (PlayerDamageAnimation.isAnimationFinished(DamageTime)){
+                Player.setHealth(Player.getHealth() - 5);
+                DamageTime = 0f;
+            }
+            return;
         }
 
         if (IsAttacking){
+            AttackTime += Gdx.graphics.getDeltaTime();
+            boolean hitEnemy = false;
+            for (int  i = 0; i < Enemies.length; i++){
+                if (Enemies[i].getHealth() <= 0){
+                    continue;
+                }
+                if (
+
+                    Math.sqrt(Math.pow(Enemies[i].getX() - Player.getX(), 2) + Math.pow(Enemies[i].getY() - Player.getY(), 2)) <= 70
+
+                ){
+                    CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
+                    if (PlayerAttack01Animation.isAnimationFinished(AttackTime) && !IsAttack01OnCooldown){
+                        EnemyAnimation.setIsDamageTaken(i, true);
+                        IsAttacking = false;
+                        IsAttack01OnCooldown = true;
+                        AttackTime = 0f;
+                        Enemies[i].setHealth(Enemies[i].getHealth() - 50);
+                        if (Player.getHealth() <= 85){
+                            Player.setHealth(Player.getHealth() + 15);
+                            System.out.println("Player +15 health");
+                        }
+                        System.out.println("Enemy " + i + " health " + Enemies[i].getHealth());
+                        hitEnemy = true;
+                        break;
+                    }
+                    hitEnemy = true;
+                    break;
+                }
+            }
+            if (hitEnemy){
+                CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
+            }
+        }
+
+        if (IsAttacking && !IsAttack01OnCooldown){
             CurrentFrame = PlayerAttack01Animation.getKeyFrame(AttackTime, false);
             if (PlayerAttack01Animation.isAnimationFinished(AttackTime)){
                 IsAttacking = false;
@@ -212,18 +270,9 @@ public class PlayerAnimation implements ApplicationListener {
         else if (IsAttack01OnCooldown){
             Attack01CooldownTimer += Gdx.graphics.getDeltaTime();
             CurrentFrame = PlayerIdleAnimation.getKeyFrame(IdleTime, true);
-            if (Attack01CooldownTimer > 2f){
+            if (Attack01CooldownTimer > 0.5f){
                 IsAttack01OnCooldown = false;
                 Attack01CooldownTimer = 0f;
-            }
-        }
-
-        else if (IsDamageTaken){
-            DamageTime += Gdx.graphics.getDeltaTime();
-            CurrentFrame = PlayerDamageAnimation.getKeyFrame(DamageTime, false);
-            if (PlayerDamageAnimation.isAnimationFinished(DamageTime)){
-                IsDamageTaken = false;
-                DamageTime = 0f;
             }
         }
 
@@ -233,6 +282,9 @@ public class PlayerAnimation implements ApplicationListener {
         }
     }
 
+    //Renders the correct size for the player
+    //Attack and other animations are different sized assets so different draws required for them
+    //Draws in  last looked direction by making width negative to look left
     public void PlayerAnimationRendering(){
         batch.begin();
         if (Objects.equals(LastDirection, "Right")){
@@ -254,6 +306,63 @@ public class PlayerAnimation implements ApplicationListener {
         batch.end();
     }
 
+    //Check to see if the next tile is a valid move, output false
+    //Else true
+    public boolean CheckValidMove(int TileX, int TileY){
+
+        int[][] map = LevelSystem.getCurrentLevel();
+
+        if (map == null){
+            return true;
+        }
+
+        if (TileY < 0 || TileY >= map.length || TileX < 0 || TileX >= map[0].length){
+            return true;
+        }
+
+        if( map[TileY][TileX] == 1 ||
+            map[TileY][TileX] == 20 ||
+            map[TileY][TileX] == 121 ||
+            map[TileY][TileX] == 105 ||
+            map[TileY][TileX] == 76 ||
+            map[TileY][TileX] == 77 ||
+            map[TileY][TileX] == 78 ||
+            map[TileY][TileX] == 79 ||
+            map[TileY][TileX] == 92 ||
+            map[TileY][TileX] == 112 ||
+            map[TileY][TileX] == 132 ||
+            map[TileY][TileX] == 152){
+            return false;
+        }
+
+        else{
+            return true;
+        }
+    }
+
+    //Check to see if the next tile is a spike, output true
+    //Else false
+    public boolean PlayerHitSpike(int TileX, int TileY){
+
+        int[][] map = LevelSystem.getCurrentLevel();
+
+        if (map == null){
+            return false;
+        }
+
+        if (TileY < 0 || TileY >= map.length || TileX < 0 || TileX >= map[0].length){
+            return false;
+        }
+
+        if (map[TileY][TileX] == 12){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    //Renders same type of health bar as the enemies just for player
     public void PlayerHealthBar(){
         Gdx.gl.glEnable(GL20.GL_BLEND);
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -280,7 +389,12 @@ public class PlayerAnimation implements ApplicationListener {
 
     @Override
     public void dispose() {
-
+        batch.dispose();
+        sr.dispose();
+        PlayerIdleTile.dispose();
+        PlayerWalkTile.dispose();
+        PlayerAttack01Tile.dispose();
+        PlayerDamageTile.dispose();
     }
 
 

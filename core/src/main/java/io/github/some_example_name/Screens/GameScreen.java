@@ -38,6 +38,7 @@ public class GameScreen extends Game implements Screen {
             LevelSystem.create();
             EnemyAnimation.setEnemies(LevelSystem.getCurrentEnemies());
             PlayerAnimation.create();
+            PlayerAnimation.setLevelSystem(LevelSystem);
             EnemyAnimation.create();
             IsInitialised = true;
         }
@@ -45,7 +46,11 @@ public class GameScreen extends Game implements Screen {
 
     @Override
     public void render(float delta) {
+        //Renders in the current level onto the screen
         LevelSystem.render();
+        //Only renders the player if their health is above 0
+        //Death screen showed when health below 0
+        //health reset and can then play again
         if (Player.getHealth() <= 0){
             mainMenuScreen.setScreen(new PlayerDeathScreen(mainMenuScreen, this, Player));
         }
@@ -57,6 +62,7 @@ public class GameScreen extends Game implements Screen {
         LevelSystem.LevelBoundaries();
     }
 
+    //Shows the main menu when escape is pressed, in a way pausing the game
     public void GoToMainMenuOnEsc() {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             mainMenuScreen.setScreen(mainMenuScreen);
